@@ -1,0 +1,33 @@
+﻿
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Your branch and 'origin/master' have diverged,
+# and have 2 and 2 different commits each, respectively.
+#   (use "git pull" to merge the remote branch into yours)
+#
+# Changes to be committed:
+#   (use "git reset HEAD <file>..." to unstage)
+#
+#	deleted:    .gitignore
+#	modified:   .metadata/.plugins/org.eclipse.core.resources/.projects/DistExec/.markers.snap
+#	modified:   .metadata/.plugins/org.eclipse.core.resources/.projects/DistExec/.syncinfo.snap
+#	modified:   .metadata/.plugins/org.eclipse.core.resources/.root/.markers.snap
+#	modified:   .metadata/.plugins/org.eclipse.core.resources/.safetable/org.eclipse.core.resources
+#	modified:   .metadata/.plugins/org.eclipse.core.resources/.snap
+#	deleted:    .metadata/.plugins/org.eclipse.jdt.core/1380058688.index
+#	deleted:    .metadata/.plugins/org.eclipse.jdt.core/208473268.index
+#	modified:   .metadata/.plugins/org.eclipse.jdt.core/savedIndexNames.txt
+#	new file:   .metadata/.plugins/org.eclipse.jdt.launching/.install.xml
+#	deleted:    DistExec/bin/jarlist.cache
+#	deleted:    DistExec/gen/com/example/distexec/BuildConfig.java
+#	deleted:    DistExec/gen/com/example/distexec/R.java
+#
+# Untracked files:
+#   (use "git add <file>..." to include in what will be committed)
+#
+#	.gitignore
+#	4dmfm44e.hm1.txt
+#	DistExec/gen/
+
+merge
