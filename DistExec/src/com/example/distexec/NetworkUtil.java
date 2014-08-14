@@ -1,14 +1,12 @@
 package com.example.distexec;
 
-
-
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class NetworkUtil {
-	public static Socket findSocket(String dstName, int dstPortMin, int dstPortMax) throws ConnectException{
+	public static Socket findPort(String dstName, int dstPortMin, int dstPortMax) throws ConnectException{
 
 		for(int i=dstPortMin;i<=dstPortMax;i++){
 			try {
