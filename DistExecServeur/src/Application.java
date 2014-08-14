@@ -13,8 +13,8 @@ public class Application {
 	 */
 	public static void main(String[] args) {
 		
-		ServeurDistExec serveur = new ServeurDistExec();
 		
+		// création de la BD
 		try {
 			JdbcConnectionSource cs = new JdbcConnectionSource("jdbc:sqlite:bd.sqlite");
 			DatabaseHelper dbh = new DatabaseHelper(cs);
@@ -24,8 +24,10 @@ public class Application {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}	
 		
+		// Exécution du serveur
+		ServeurDistExec serveur = new ServeurDistExec();
 		serveur.start();
 		
 	}
