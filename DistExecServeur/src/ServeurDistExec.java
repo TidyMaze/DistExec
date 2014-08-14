@@ -9,29 +9,72 @@ public class ServeurDistExec {
 	private static final int PORTMAX = 9305;
 
 	ServerSocket ss;
+	Thread threadNouveauClients;
+	boolean arret = true;
 	
 	public ServeurDistExec(){
-		try {
-			ss = NetworkUtil.findServerSocketSocket(PORTMIN, PORTMAX);
+		
+	}
+	
+	
+	public void start() {
+		
+		if( arret == false ) System.out.println(" --  Server already started");
+		else {
 			
-			Thread threadNouveauClients = new Thread(new Runnable() {
-				
+			System.out.println(" --  Launching server");
+			
+			try {
+				ss = NetworkUtil.findServerSocketSocket(PORTMIN, PORTMAX);			
+			} catch (ConnectException e) {
+				e.printStackTrace();
+			}
+			
+			this.threadNouveauClients = new Thread(new Runnable() {			
 				@Override
 				public void run() {
-					while(true){
+					while( !arret ){
 						try {
-							Socket socketClient = ss.accept();
-							ThreadClient tClient = new ThreadClient(socketClient);  
+							Socket socketClient = ss.accept();	// bloquant
+							ThreadClient tClient = new ThreadClient(socketClient); 
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
 					}
 				}
 			});
+			this.threadNouveauClients.start();
+			arret = false;
 			
-			threadNouveauClients.start();
-		} catch (ConnectException e) {
-			e.printStackTrace();
+			System.out.println(" --  Serveur started");
 		}
+		
+		
 	}
+	
+	public void stop() {
+		
+		if( arret == true ) System.out.println(" --  Server already stopped");
+		else {
+			
+			try {
+				this.ss.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			this.threadNouveauClients.interrupt();
+			arret = true;
+			
+			System.out.println(" --  Serveur stopped");
+		}
+		
+	}
+	
+	public void restart() {
+		this.stop();
+		this.start();
+	}
+	
 }

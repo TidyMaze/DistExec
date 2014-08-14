@@ -16,9 +16,9 @@ public class NetworkUtil {
 				Socket s = new Socket(dstName, i);
 				return s;
 			} catch (UnknownHostException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			} catch (IOException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 		throw new ConnectException("Pas de port dispo ou mauvaise connexion, rtfm noob");
@@ -31,9 +31,9 @@ public class NetworkUtil {
 				ServerSocket ss = new ServerSocket(i);
 				return ss;
 			} catch (UnknownHostException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			} catch (IOException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 		throw new ConnectException("Pas de port dispo ou mauvaise connexion, rtfm noob");
