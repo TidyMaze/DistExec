@@ -7,12 +7,11 @@ import java.net.Socket;
 public class ServeurDistExec {
 	private static final int PORTMIN = 9301;
 	private static final int PORTMAX = 9305;
-
+	private int port;
+	
 	ServerSocket ss;
 	Thread threadNouveauClients;
 	boolean arret = true;
-	
-	int port;
 	
 	public ServeurDistExec(){
 		
@@ -82,5 +81,10 @@ public class ServeurDistExec {
 		this.stop();
 		this.start();
 	}
+
+
+	public int getPort() {
+		return port;
+	}	
 	
 }
