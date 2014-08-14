@@ -10,6 +10,8 @@ import java.net.UnknownHostException;
 public class NetworkUtil {
 	public static Socket findSocket(String dstName, int dstPortMin, int dstPortMax) throws ConnectException{
 
+		
+		
 		for(int i=dstPortMin;i<=dstPortMax;i++){
 			try {
 				Socket s = new Socket(dstName, i);

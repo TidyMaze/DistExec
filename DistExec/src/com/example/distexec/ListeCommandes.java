@@ -24,8 +24,8 @@ import android.widget.Toast;
 public class ListeCommandes extends Activity {
 
 	private static final String IP = null;
-	private static final int PORTMIN = 0;
-	private static final int PORTMAX = 0;
+	private static final int PORTMIN = 9301;
+	private static final int PORTMAX = 9305;
 	private Serveur serveur;
 	
 	private void buildList(){
@@ -53,34 +53,51 @@ public class ListeCommandes extends Activity {
 	protected void onResume() {
 		super.onResume();
 		
-		OutputStreamWriter osw = null;
+		Thread thread = new Thread(new Runnable(){
+		    @Override
+		    public void run() {
+		        try {
+		        	OutputStreamWriter osw = null;
+		    		
+		    		try {
+		    			Socket socket = NetworkUtil.findSocket(serveur.getIp(), PORTMIN, PORTMAX);
+		    			System.out.println("port distant : " + socket.getPort());
+		    			System.out.println("port local : " + socket.getLocalPort());
+		    			OutputStream os = socket.getOutputStream();
+		    			osw = new OutputStreamWriter(os);
+		    			PrintWriter pw = new PrintWriter(osw);
+		    			System.out.println("envoi HELO");
+		    			pw.println("HELO");
+		    			pw.println("test");
+		    			pw.flush();
+		    			System.out.println("HELO marqué et envoyé");
+		    		
+		    			
+		    		} catch (ConnectException e) {
+		    			Toast.makeText(ListeCommandes.this, "Hey, je ne trouve pas de serveur !", Toast.LENGTH_LONG).show();
+		    			e.printStackTrace();
+		    		} catch (IOException e) {
+		    			// TODO Auto-generated catch block
+		    			e.printStackTrace();
+		    		} finally {
+		    			if(osw != null){
+		    				try {
+		    					osw.close();
+		    				} catch (IOException e) {
+		    					// TODO Auto-generated catch block
+		    					e.printStackTrace();
+		    				}
+		    			}
+		    		}
+		        } catch (Exception e) {
+		            e.printStackTrace();
+		        }
+		    }
+		});
+
+		thread.start(); 
 		
-		try {
-			Socket socket = NetworkUtil.findSocket(serveur.getIp(), PORTMIN, PORTMAX);
-			OutputStream os = socket.getOutputStream();
-			osw = new OutputStreamWriter(os);
-			PrintWriter pw = new PrintWriter(osw);
-			
-			pw.println("HELO");
-			
-			osw.close();
-			
-		} catch (ConnectException e) {
-			Toast.makeText(ListeCommandes.this, "Hey, je ne trouve pas de serveur !", Toast.LENGTH_LONG).show();
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			if(osw != null){
-				try {
-					osw.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
+		
 	}
 
 	@Override
