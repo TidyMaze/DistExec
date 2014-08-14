@@ -3,6 +3,7 @@ package com.example.distexec;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.sql.SQLException;
@@ -55,10 +56,12 @@ public class ListeCommandes extends Activity {
 		OutputStreamWriter osw = null;
 		
 		try {
-			Socket socket = NetworkUtil.findPort(serveur.getIp(), PORTMIN, PORTMAX);
+			Socket socket = NetworkUtil.findSocket(serveur.getIp(), PORTMIN, PORTMAX);
 			OutputStream os = socket.getOutputStream();
 			osw = new OutputStreamWriter(os);
-			osw.write("HELO");
+			PrintWriter pw = new PrintWriter(osw);
+			
+			pw.println("HELO");
 			
 			osw.close();
 			
