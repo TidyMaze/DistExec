@@ -1,6 +1,10 @@
 package com.example.distexec;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -10,15 +14,23 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.*;
+
 import com.example.distexec.BD.DatabaseHelper;
 import com.example.distexec.BD.Serveur;
 import com.j256.ormlite.dao.Dao;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 public class ListeCommandes extends Activity {
@@ -27,6 +39,9 @@ public class ListeCommandes extends Activity {
 	private static final int PORTMIN = 9301;
 	private static final int PORTMAX = 9305;
 	private Serveur serveur;
+	
+	
+	private ListView listeCommandes;
 	
 	private void buildList(){
     	
@@ -47,6 +62,32 @@ public class ListeCommandes extends Activity {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		
+		
+		this.listeCommandes.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				
+				/*
+				int idServ = ((StringItem)listeServeurs.getItemAtPosition(position)).second;
+				Intent i = new Intent(ListeServeurs.this, ListeCommandes.class);
+				i.putExtra("idserv", idServ);
+				startActivity(i);
+				*/
+				int id_commande = 0;
+				String nom_commande = "";
+				String description_commande = "";
+				
+				Intent i = new Intent( ListeCommandes.this, Commande.class);
+				i.putExtra("id_commande", id_commande);
+				i.putExtra("nom_commande", nom_commande);
+				i.putExtra("description_commande", description_commande);
+				startActivity(i);
+				
+			}
+		});
+		
 	}
 
 	@Override
@@ -60,18 +101,45 @@ public class ListeCommandes extends Activity {
 		        	OutputStreamWriter osw = null;
 		    		
 		    		try {
-		    			Socket socket = NetworkUtil.findSocket(serveur.getIp(), PORTMIN, PORTMAX);
-		    			System.out.println("port distant : " + socket.getPort());
-		    			System.out.println("port local : " + socket.getLocalPort());
+		    			
+		    			Socket socket = NetworkUtil.findSocket( serveur.getIp(), PORTMIN, PORTMAX );
+		    			System.out.println( "port distant : " + socket.getPort() );
+		    			System.out.println( "port local : " + socket.getLocalPort() );
+		    			
 		    			OutputStream os = socket.getOutputStream();
 		    			osw = new OutputStreamWriter(os);
 		    			PrintWriter pw = new PrintWriter(osw);
-		    			System.out.println("envoi HELO");
-		    			pw.println("HELO");
-		    			pw.println("test");
-		    			pw.flush();
-		    			System.out.println("HELO marqué et envoyé");
-		    		
+		    			
+		    			// envoie de la demande de récupération (des commandes)
+		    			JSONObject json = new JSONObject();
+		    			json.put( "etat" , "lister" );
+		    			pw.println( json.toString() );
+
+		    			// récupération des commandes
+		    			InputStream is = socket.getInputStream();
+		    			InputStreamReader isr = new InputStreamReader(is);
+		    			BufferedReader br = new BufferedReader(isr);
+		    			String ligne = br.readLine();
+		    			JSONObject reponse_json = new JSONObject( ligne );  
+		    			
+		    			// affichage des commandes dans la ListView
+		    			if( reponse_json.has("commandes") ) {
+		    				
+		    				JSONArray liste = reponse_json.getJSONArray("commandes");
+		    				for( int i = 0 ; i < liste.length() ; i++ ) {
+		    					JSONObject commande = liste.getJSONObject( i );
+		    					int id_commande = commande.getInt("id");
+		    					String nom_commande = commande.getString("nom");
+		    					String description_commande = commande.getString("description");
+		    					
+		    					
+		    					
+		    				}
+		    			}
+		    			else {
+		    				// erreur ?
+		    			}
+		    					    			
 		    			
 		    		} catch (ConnectException e) {
 		    			Toast.makeText(ListeCommandes.this, "Hey, je ne trouve pas de serveur !", Toast.LENGTH_LONG).show();
