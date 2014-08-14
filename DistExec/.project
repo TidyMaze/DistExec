@@ -30,4 +30,16 @@
 		<nature>com.android.ide.eclipse.adt.AndroidNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>ormlite-android-4.48.jar</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Android/ormlite/ormlite-android-4.48.jar</locationURI>
+		</link>
+		<link>
+			<name>ormlite-core-4.48.jar</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Android/ormlite/ormlite-core-4.48.jar</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>

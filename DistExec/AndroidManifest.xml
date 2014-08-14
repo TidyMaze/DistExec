@@ -14,13 +14,25 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MainActivity"
+            android:name=".ListeServeurs"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".ListeCommandes"
+            android:label="@string/title_activity_liste_commandes" >
+        </activity>
+        <activity
+            android:name=".AjoutServeur"
+            android:label="@string/title_activity_ajout_serveur" >
+        </activity>
+        <activity
+            android:name=".Commande"
+            android:label="@string/title_activity_commande" >
         </activity>
     </application>
 

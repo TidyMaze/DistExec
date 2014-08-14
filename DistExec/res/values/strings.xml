@@ -4,5 +4,16 @@
     <string name="app_name">DistExec</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="ajoutServeur">Ajouter un serveur</string>
+    <string name="title_activity_liste_commandes">ListeCommandes</string>
+    <string name="title_activity_ajout_serveur">AjoutServeur</string>
+    <string name="ajoutServIp">Ip du serveur</string>
+    <string name="ajoutServNom">Nom du serveur</string>
+    <string name="valider">Valider</string>
+    <string name="annuler">Annuler</string>
+    <string name="title_activity_commande">Commande</string>
+    <string name="commandeNom">Nom de la commande</string>
+    <string name="commandeDescription">Description de la commande</string>
+    <string name="commandeExecuter">Exécuter</string>
 
 </resources>
