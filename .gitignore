@@ -4,6 +4,7 @@
 
 *.pydevproject
 .metadata
+.classpath
 bin/
 tmp/
 *.tmp
