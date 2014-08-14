@@ -12,6 +12,8 @@ public class ServeurDistExec {
 	Thread threadNouveauClients;
 	boolean arret = true;
 	
+	int port;
+	
 	public ServeurDistExec(){
 		
 	}
@@ -19,13 +21,15 @@ public class ServeurDistExec {
 	
 	public void start() {
 		
-		if( arret == false ) System.out.println(" --  Server already started");
+		if( arret == false ) System.out.println(" --  Serveur : already started");
 		else {
 			
-			System.out.println(" --  Launching server");
+			System.out.println(" --  Serveur : launching");
 			
 			try {
-				ss = NetworkUtil.findServerSocketSocket(PORTMIN, PORTMAX);			
+				ss = NetworkUtil.findServerSocketSocket(PORTMIN, PORTMAX);
+				this.port = ss.getLocalPort();
+				
 			} catch (ConnectException e) {
 				e.printStackTrace();
 			}
@@ -36,7 +40,9 @@ public class ServeurDistExec {
 					while( !arret ){
 						try {
 							Socket socketClient = ss.accept();	// bloquant
-							ThreadClient tClient = new ThreadClient(socketClient); 
+							System.out.println(" --  Serveur : new client");
+							ThreadClient tClient = new ThreadClient(socketClient); 	
+							tClient.start();
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
@@ -46,7 +52,7 @@ public class ServeurDistExec {
 			this.threadNouveauClients.start();
 			arret = false;
 			
-			System.out.println(" --  Serveur started");
+			System.out.println(" --  Serveur : started on port " + this.port );
 		}
 		
 		
@@ -54,7 +60,7 @@ public class ServeurDistExec {
 	
 	public void stop() {
 		
-		if( arret == true ) System.out.println(" --  Server already stopped");
+		if( arret == true ) System.out.println(" --  Server : already stopped");
 		else {
 			
 			try {
@@ -67,7 +73,7 @@ public class ServeurDistExec {
 			this.threadNouveauClients.interrupt();
 			arret = true;
 			
-			System.out.println(" --  Serveur stopped");
+			System.out.println(" --  Serveur : stopped");
 		}
 		
 	}

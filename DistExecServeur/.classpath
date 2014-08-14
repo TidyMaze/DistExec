@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry exported="true" kind="lib" path="C:/Users/Maxime/Documents/Programmation/java/OrmLite/ormlite-core-4.48.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Maxime/Documents/Programmation/java/OrmLite/sqlite-jdbc-3.7.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Users/Maxime/Documents/Programmation/java/OrmLite/ormlite-jdbc-4.48.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/Users/Maxime/Documents/Programmation/java/OrmLite/java-json.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/Users/Maxime/Documents/Programmation/java/OrmLite/sqlite-jdbc-3.7.2.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="output" path="bin"/>
