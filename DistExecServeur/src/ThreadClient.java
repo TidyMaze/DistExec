@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.sql.SQLException;
 import java.util.logging.Logger;
@@ -27,7 +28,7 @@ public class ThreadClient extends Thread {
 
 	private Socket socketClient;
 	private BufferedReader br;
-	private BufferedWriter bw;
+	private PrintWriter pw;
 	
 	public ThreadClient(Socket socketClient) throws IOException {
 		super();
@@ -40,7 +41,7 @@ public class ThreadClient extends Thread {
 		
 		OutputStream outputStream = socketClient.getOutputStream();
 		OutputStreamWriter osw = new OutputStreamWriter( outputStream );
-		this.bw = new BufferedWriter( osw );
+		this.pw = new PrintWriter( osw );
 		
 	}
 
@@ -52,7 +53,7 @@ public class ThreadClient extends Thread {
 					
 			try {
 				
-				String ligne = br.readLine();					
+				String ligne = br.readLine();
 				if( ligne != null ) {
 					
 					try {
@@ -77,7 +78,7 @@ public class ThreadClient extends Thread {
 							
 						}
 						else {
-							// ne possède pas le champs etat
+							// ne possï¿½de pas le champs etat
 							
 						}	
 						
@@ -102,12 +103,12 @@ public class ThreadClient extends Thread {
 		
 		if( json.has("id") ) {
 			
-			// recupération de l'identifiant de la commande
+			// recupï¿½ration de l'identifiant de la commande
 			int id = -1;
 			try {
 				id = json.getInt("id");
 			} catch (JSONException e) {
-				// Ne devrait jamais passer par la, car on a déjà vérifié s'il possède cette clé
+				// Ne devrait jamais passer par la, car on a dï¿½jï¿½ vï¿½rifiï¿½ s'il possï¿½de cette clï¿½
 				e.printStackTrace();
 			}
 			
@@ -139,7 +140,7 @@ public class ThreadClient extends Thread {
 			
 		}
 		else {
-			// ne possède pas le champs id
+			// ne possï¿½de pas le champs id
 			
 		}
 		
@@ -149,12 +150,12 @@ public class ThreadClient extends Thread {
 	
 		try {
 			
-			// connexion à la BD
+			// connexion ï¿½ la BD
 			JdbcConnectionSource cs = new JdbcConnectionSource("jdbc:sqlite:bd.sqlite");
 			DatabaseHelper dbh = new DatabaseHelper(cs);
 			Dao<Commande, Integer> commandeDao = dbh.getCommandeDao();
 			
-			// conversion des données de la BD en JSON
+			// conversion des donnï¿½es de la BD en JSON
 			JSONObject json_commandes = new JSONObject();
 			try {
 				json_commandes.put( "commandes" , commandeDao.queryForAll() );
@@ -162,15 +163,11 @@ public class ThreadClient extends Thread {
 				e.printStackTrace();
 			}
 			
-			// envoie des données convertie en JSON
+			// envoie des donnï¿½es convertie en JSON
 			System.out.println( " --  Server : data :: " + json_commandes.toString() );
-			try {
-				json_commandes.write( this.bw );
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			
+			this.pw.println( json_commandes.toString() );
+			this.pw.flush();	
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

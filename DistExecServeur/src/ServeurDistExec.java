@@ -39,7 +39,7 @@ public class ServeurDistExec {
 					while( !arret ){
 						try {
 							Socket socketClient = ss.accept();	// bloquant
-							System.out.println(" --  Serveur : new client");
+							System.out.println(" --  Serveur : new client on port " + socketClient.getPort() );
 							ThreadClient tClient = new ThreadClient(socketClient); 	
 							tClient.start();
 						} catch (IOException e) {
