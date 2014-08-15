@@ -21,7 +21,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     private static final int DATABASE_VERSION = 1;
 
 	private Dao<Serveur, Integer> serveurDao;
-
+	private Dao<Commande, Integer> commandeDao;
+	
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
@@ -30,6 +31,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
 		try {
 			TableUtils.createTable(connectionSource, Serveur.class);
+			TableUtils.createTable(connectionSource, Commande.class);
 		} catch (SQLException e) {
             Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
             throw new RuntimeException(e);
@@ -41,6 +43,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		try {
 			TableUtils.dropTable(connectionSource, Serveur.class, false);
 			TableUtils.createTable(connectionSource, Serveur.class);
+			
+			TableUtils.dropTable(connectionSource, Commande.class, false);
+			TableUtils.createTable(connectionSource, Commande.class);
 		} catch (SQLException e) {
             Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
             throw new RuntimeException(e);
@@ -57,4 +62,16 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         }
         return this.serveurDao;
     }
+    
+    public Dao<Commande, Integer> getCommandeDao() {
+        if (null == this.commandeDao) {
+            try {
+                this.commandeDao = getDao(Commande.class);
+            }catch (java.sql.SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return this.commandeDao;
+    } 
+    
 }

@@ -17,12 +17,16 @@ public class Commande {
 	@DatabaseField
 	private String script;
 
+	@DatabaseField(unique = true)
+	private int idServeur;
+
 	public Commande() {
 		super();
 	}
 
-	public Commande(String nom, String description, String script) {
+	public Commande( String nom, String description, String script, int id_serveur ) {
 		super();
+		this.idServeur = id_serveur;
 		this.nom = nom;
 		this.description = description;
 		this.script = script;
@@ -59,4 +63,14 @@ public class Commande {
 	public void setScript(String script) {
 		this.script = script;
 	}
+
+	public int getIdServeur() {
+		return idServeur;
+	}
+
+	public void setIdServeur(int idServeur) {
+		this.idServeur = idServeur;
+	}
+	
+	
 }

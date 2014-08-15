@@ -33,7 +33,7 @@
             android:label="@string/title_activity_ajout_serveur" >
         </activity>
         <activity
-            android:name=".Commande"
+            android:name=".VueCommande"
             android:label="@string/title_activity_commande" >
         </activity>
     </application>

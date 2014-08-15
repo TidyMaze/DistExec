@@ -1,10 +1,10 @@
 import java.sql.SQLException;
 import java.util.List;
 
+import com.j256.ormlite.jdbc.JdbcConnectionSource;
+
 import BD.Commande;
 import BD.DatabaseHelper;
-
-import com.j256.ormlite.jdbc.JdbcConnectionSource;
 
 
 public class Application {
@@ -25,7 +25,7 @@ public class Application {
 			List<Commande> listeCommandes = dbh.getCommandeDao().queryForAll();
 			System.out.println(" --  Serveur : Commandes Existantes : ");
 			for( Commande c : listeCommandes ) {
-				System.out.println( " 	- " + c.getNom() + " ; " + c.getDescription() + " ; " + c.getScript() );
+				System.out.println( " 	- "  + c.getId() +  " ; " + c.getNom() + " ; " + c.getDescription() + " ; " + c.getScript() );
 			}
 			
 			

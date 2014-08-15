@@ -52,8 +52,6 @@ public class ListeServeurs extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_liste_serveurs);
         
-        listeServeurs = (ListView)findViewById(R.id.listeServeurs);
-        
         Button boutonAjouter = (Button)findViewById(R.id.ajoutServ);
         boutonAjouter.setOnClickListener(new OnClickListener() {
 			
@@ -64,6 +62,7 @@ public class ListeServeurs extends Activity {
 			}
 		});
         
+        listeServeurs = (ListView)findViewById(R.id.listeServeurs);
         listeServeurs.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
