@@ -35,6 +35,10 @@ public abstract class Vue extends JFrame implements Observer {
 		this.bouton_start = new JButton("Start");
 		this.bouton_stop = new JButton("Stop");
 		this.bouton_restart = new JButton("Restart");
+		
+		this.bouton_restart.setEnabled( false );
+		this.bouton_stop.setEnabled( false );
+		
 	}
 	
 	
@@ -42,7 +46,25 @@ public abstract class Vue extends JFrame implements Observer {
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		// TODO Auto-generated method stub
+		Model m = (Model)arg0;
+		Code code = (Code)arg1;
 		
+		if( code == Code.START_SERVER ) {
+			this.bouton_start.setEnabled(false);
+			this.bouton_stop.setEnabled(true);
+			this.bouton_restart.setEnabled(true);
+		}
+		else if( code == Code.STOP_SERVER ) {
+			this.bouton_start.setEnabled(true);
+			this.bouton_stop.setEnabled(false);
+			this.bouton_restart.setEnabled(false);
+		}
+		else if( code == Code.RESTART_SERVER ) {
+
+		}
+		else {
+
+		}
 	}
 	
 	

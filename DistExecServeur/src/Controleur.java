@@ -43,14 +43,14 @@ public class Controleur implements ActionListener {
 		switch( bouton.getText() ) 
 		{
 		case "Start":
-			this.model.getServeur().start();
+			this.model.startServer();
 			break;
 		case "Stop":
-			this.model.getServeur().stop();
+			this.model.stopServer();
 			break;
 			
 		case "Restart":
-			this.model.getServeur().restart();		
+			this.model.resartServer();	
 			break;
 			
 		default:

@@ -21,14 +21,25 @@ public class Model extends Observable {
 	
 	
 	/* partie Observable */
-	public void miseAjour(  ) {
+	public void miseAjour( Code code ) {
 		this.setChanged();
-		this.notifyObservers(  );
+		this.notifyObservers( code );
 	}
 	
+		
+	public void startServer() {
+		this.serveur.start();
+		this.miseAjour( Code.START_SERVER );
+	}
 	
-	public ServeurDistExec getServeur() {
-		return this.serveur;
+	public void stopServer() {
+		this.serveur.stop();
+		this.miseAjour( Code.STOP_SERVER );
+	}
+	
+	public void resartServer() {
+		this.serveur.restart();
+		this.miseAjour( Code.RESTART_SERVER );
 	}
 	
 	

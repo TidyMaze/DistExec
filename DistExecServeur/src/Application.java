@@ -33,7 +33,7 @@ public class Application {
 		controleur.addVue(vue);
 		
 		// Exécution du serveur
-		model.getServeur().start();
+		//model.getServeur().start();
 		
 		//System.out.println( model.getServeur().getIpLocal() + " " + model.getServeur().getPort() );
 		
