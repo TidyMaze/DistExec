@@ -42,11 +42,28 @@ public class Model extends Observable {
 		this.miseAjour( Code.RESTART_SERVER );
 	}
 	
+	public int getPort() {
+		return this.serveur.getPort();
+	}
+	
+	public String getIpLocal() {
+		return this.serveur.getIpLocal();
+	}
+	
 	
 	public List<Commande> getListeCommande() throws SQLException {
 		JdbcConnectionSource cs = new JdbcConnectionSource("jdbc:sqlite:bd.sqlite");
 		DatabaseHelper dbh = new DatabaseHelper(cs);
 		return dbh.getCommandeDao().queryForAll();
 	}
+	
+	public void ajouterCommande( Commande commande ) throws SQLException {
+		
+		JdbcConnectionSource cs = new JdbcConnectionSource("jdbc:sqlite:bd.sqlite");
+		DatabaseHelper dbh = new DatabaseHelper(cs);
+		dbh.getCommandeDao().create( commande );
+		
+	}
+	
 	
 }

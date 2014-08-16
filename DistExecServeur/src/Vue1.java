@@ -1,16 +1,25 @@
+import java.awt.BorderLayout;
+import java.awt.Button;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Label;
 import java.awt.TextArea;
 import java.awt.TextField;
+import java.sql.SQLException;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneLayout;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
+
+import BD.Commande;
 
 
 
@@ -69,11 +78,8 @@ public class Vue1 extends Vue {
 		 */
 
 		Label label_ipLocal = new Label( "ip local : " );
-		Label label_ipLocal_valeur = new Label("non définie");
-
 		Label label_port = new Label("port : ");
-		Label label_port_valeur = new Label("non définie");
-
+		
 
 		GridBagLayout grille_b11 = new GridBagLayout(  );
 		GridBagConstraints contrainte_b11 = new GridBagConstraints();
@@ -127,31 +133,36 @@ public class Vue1 extends Vue {
 
 
 		Label label_nom = new Label("nom : ");
-		TextField champ_nom = new TextField();
-
 		Label label_description = new Label("description :");
-		TextArea champ_description = new TextArea();
-
-		Label label_script = new Label("choisir un script :");
 		//JFileChooser champ_script = new JFileChooser();
-		JButton choisir_script = new JButton("Choisir script");
-
-		JButton bouton_ok = new JButton("OK");
-		JButton bouton_annuler = new JButton("Annuler");
+		
 
 		b21.add( label_nom );
-		b21.add( champ_nom );
+		b21.add( this.champ_nom );
 		b21.add( label_description );
-		b21.add( new TextField() );
-		b21.add( label_script );
-		b21.add( choisir_script );
-		b21.add( bouton_ok );
-		b21.add( bouton_annuler );
+		b21.add( this.champ_description );
+		b21.add( this.choisir_script );
+		b21.add( new JScrollPane( this.champ_script , JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED , JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED ) );
+		b21.add( this.bouton_ok );
+		b21.add( this.bouton_annuler );
 
 
 		/*
 		 * panneau liste des commandes
 		 */
+		try {
+			
+			List<Commande> listeCommande = this.model.getListeCommande();
+			int taille = listeCommande.size();
+			
+			
+			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		
 		
 		

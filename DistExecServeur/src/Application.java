@@ -32,6 +32,15 @@ public class Application {
 		Vue1 vue = new Vue1( model , controleur );
 		controleur.addVue(vue);
 		
+		try {
+			for( Commande c : model.getListeCommande() ) {
+				System.out.println( c.getNom() + " " + c.getScript() + " " + c.getDescription() );
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		// Exécution du serveur
 		//model.getServeur().start();
 		

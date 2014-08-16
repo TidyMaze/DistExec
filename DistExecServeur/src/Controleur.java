@@ -1,8 +1,15 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+
+import BD.Commande;
 
 
 
@@ -24,9 +31,14 @@ public class Controleur implements ActionListener {
 		this.vues.add( vue );
 		
 		// ajout des listeners sur la vue
+		
 		vue.bouton_start.addActionListener( this );
 		vue.bouton_stop.addActionListener( this );
 		vue.bouton_restart.addActionListener( this );
+		
+		vue.bouton_ok.addActionListener( this );
+		vue.bouton_annuler.addActionListener( this );
+		vue.choisir_script.addActionListener( this );
 		
 		// afficher la vue
 		vue.setVisible( true );
@@ -34,32 +46,75 @@ public class Controleur implements ActionListener {
 
 	
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
+	public void actionPerformed(ActionEvent e ) {
 		// TODO Auto-generated method stub
 		
-		JButton bouton  = (JButton) arg0.getSource();	// bouton qui a été actionné
+		JButton bouton  = (JButton) e.getSource();	// bouton qui a été actionné
 		
-		// selon le nom du bouton :
-		switch( bouton.getText() ) 
-		{
-		case "Start":
+		// on récupère la vue source de l'action 
+		JFrame frame = (JFrame) SwingUtilities.getRoot(bouton);
+		Vue vue = (Vue) frame;
+		
+		// bouton start/stop serveur
+		if( e.getSource() == vue.bouton_start ) {
 			this.model.startServer();
-			break;
-		case "Stop":
+		}
+		else if( e.getSource() == vue.bouton_stop ) {
 			this.model.stopServer();
-			break;
+		}
+		else if( e.getSource() == vue.bouton_restart ) {
+			this.model.resartServer();
+		}
+		// bouton ajout/supp commande
+		else if( e.getSource() == vue.bouton_ok ) {
+
+			if( vue.getChampNom().length() <= 0 ) {
+				System.out.println("champ nom vide");
+				// prévenir l'user via l'ihm
+			}
+			else if ( vue.getChampScript().length() <= 0 ) {
+				System.out.println("pas de script");
+			}
+			else {
+				
+				String nom = vue.getChampNom();
+				String description = vue.getChampDescription();
+				String script = vue.getChampScript();
+				
+				try {
+					this.model.ajouterCommande( new Commande( nom , description , script ) );
+					vue.viderChamps();
+				} catch (SQLException exception ) {
+					// impossible de créer la nouvelle commande dans la BD !!!
+					// prévenir le client via l'interface
+					exception.printStackTrace();
+				}
+			}
 			
-		case "Restart":
-			this.model.resartServer();	
-			break;
+		}
+		else if( e.getSource() == vue.bouton_annuler ) {
+			vue.viderChamps();
+		}
+		else if( e.getSource() == vue.choisir_script) {
 			
-		default:
-			break;
+			JFileChooser fc = new JFileChooser();
+			int returnVal = fc.showOpenDialog( vue );
+			
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+	            File file = fc.getSelectedFile();
+	            System.out.println("Opening: " + file.getName() );
+	            vue.champ_script.setText( file.toURI().toString() );
+	        } else {
+	        	System.out.println("Open command cancelled by user." );
+	        	vue.champ_script.setText( "" );
+	        }
+			
+		}
+		else  {
+
 		}
 		
-		if( bouton.getText().equals("start") ) {
-			
-		}
+		
 	}
 	
 	
