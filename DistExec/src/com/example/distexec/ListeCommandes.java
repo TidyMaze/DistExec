@@ -1,14 +1,12 @@
 package com.example.distexec;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.net.ConnectException;
 import java.net.Socket;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -24,16 +22,13 @@ import com.example.distexec.BD.Commande;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 public class ListeCommandes extends Activity {
 
@@ -68,14 +63,7 @@ public class ListeCommandes extends Activity {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				
-				/*
-				int idServ = ((StringItem)listeServeurs.getItemAtPosition(position)).second;
-				Intent i = new Intent(ListeServeurs.this, ListeCommandes.class);
-				i.putExtra("idserv", idServ);
-				startActivity(i);
-				*/
-				
+								
 				int id_commande = ((StringItem)listeCommandes.getItemAtPosition(position)).second;
 				Intent i = new Intent( ListeCommandes.this, VueCommande.class);
 				i.putExtra("id_commande", id_commande);

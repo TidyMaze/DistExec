@@ -21,23 +21,21 @@ public class Application {
 			DatabaseHelper dbh = new DatabaseHelper(cs);
 			dbh.create();
 			
-			//dbh.getCommandeDao().createIfNotExists( new Commande("commande 1", "description commande 1", "C:\\Users\\Maxime\\Documents\\Programmation\\batch\\test.bat") );
-			List<Commande> listeCommandes = dbh.getCommandeDao().queryForAll();
-			System.out.println(" --  Serveur : Commandes Existantes : ");
-			for( Commande c : listeCommandes ) {
-				System.out.println( " 	- "  + c.getId() +  " ; " + c.getNom() + " ; " + c.getDescription() + " ; " + c.getScript() );
-			}
-			
-			
-			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
 		
+		
+		Model model = new Model();
+		Controleur controleur = new Controleur( model );
+		Vue1 vue = new Vue1( model , controleur );
+		controleur.addVue(vue);
+		
 		// Exécution du serveur
-		ServeurDistExec serveur = new ServeurDistExec();
-		serveur.start();
+		model.getServeur().start();
+		
+		//System.out.println( model.getServeur().getIpLocal() + " " + model.getServeur().getPort() );
 		
 	}
 

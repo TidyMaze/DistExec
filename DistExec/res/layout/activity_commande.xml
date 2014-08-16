@@ -33,7 +33,7 @@
         android:layout_above="@+id/executer"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/textView1" >
+        android:layout_below="@+id/textview1" >
 
         <LinearLayout
             android:layout_width="match_parent"

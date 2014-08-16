@@ -128,7 +128,7 @@ public class VueCommande extends Activity {
 					/* Au format JSON :
 					 * {
 					 * 		etat: "executer"
-					 * 		id: "in_commande"
+					 * 		id: "id_commande"
 					 * }
 					 */
 					JSONObject json_listerCommande = new JSONObject();

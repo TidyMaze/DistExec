@@ -2,8 +2,10 @@
 
 import java.io.IOException;
 import java.net.ConnectException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 
 public class ServeurDistExec {
@@ -88,5 +90,15 @@ public class ServeurDistExec {
 	public int getPort() {
 		return port;
 	}	
+	
+	public String getIpLocal() {
+		try {
+			return InetAddress.getLocalHost().getHostAddress();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "erreur, impossible d'obtenir l'adresse ip local";
+		}
+	}
 	
 }
