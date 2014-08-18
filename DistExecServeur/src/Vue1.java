@@ -1,5 +1,6 @@
 import java.awt.BorderLayout;
 import java.awt.Button;
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -7,19 +8,29 @@ import java.awt.Label;
 import java.awt.TextArea;
 import java.awt.TextField;
 import java.sql.SQLException;
+import java.util.EventObject;
 import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.ScrollPaneLayout;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.CellEditorListener;
+import javax.swing.table.TableCellEditor;
 
 import BD.Commande;
+
+import MonTableau.TableModelCommande;
+import MonTableau.TableauCommande;
+import MonTableau.TableauJButtonEditor;
+import MonTableau.TableauJButtonRenderer;
 
 
 
@@ -50,9 +61,9 @@ public class Vue1 extends Vue {
 
 
 		GridBagLayout grille_b1 = new GridBagLayout();
-		JPanel b1 = new JPanel();
+		JPanel b1 = new JPanel(grille_b1);
 		GridBagConstraints contrainte_b1 = new GridBagConstraints();
-		donnerContrainte(contrainte_b1,0,0,1,1, largeur_b1, hauteur_b1  );
+		donnerContrainte(contrainte_b1,0,0,1,1, largeur_b1, hauteur_b1 , GridBagConstraints.BOTH  );
 		b1.setBorder( BorderFactory.createTitledBorder( loweredetched, "Serveur" )  );
 
 		GridBagLayout grille_b2 = new GridBagLayout();
@@ -84,21 +95,21 @@ public class Vue1 extends Vue {
 		GridBagLayout grille_b11 = new GridBagLayout(  );
 		GridBagConstraints contrainte_b11 = new GridBagConstraints();
 		JPanel b11 = new JPanel(grille_b11);
-		donnerContrainte(contrainte_b11, 0,0, 1,1, 70 , 100 );
+		donnerContrainte(contrainte_b11, 0,0, 1,1, 100 , 70 , GridBagConstraints.BOTH  );
 		b1.add( b11 , contrainte_b11 );
 
 
 		GridBagLayout grille_b12 = new GridBagLayout(  );
 		GridBagConstraints contrainte_b12 = new GridBagConstraints();
 		JPanel b12 = new JPanel(grille_b12);
-		donnerContrainte(contrainte_b12, 1,0, 1,1, 5 , 100 );
+		donnerContrainte(contrainte_b12, 0,1, 1,1, 100 , 5 , GridBagConstraints.BOTH );
 		b1.add( b12 , contrainte_b12 );
 
 
 		GridBagLayout grille_b13 = new GridBagLayout(  );
 		GridBagConstraints contrainte_b13 = new GridBagConstraints();
 		JPanel b13 = new JPanel(grille_b13);
-		donnerContrainte(contrainte_b13, 2,0, 1,1, 25 , 100 );
+		donnerContrainte(contrainte_b13, 0,2, 1,1, 100 , 25 , GridBagConstraints.BOTH  );
 		b1.add( b13 , contrainte_b13 );
 
 
@@ -115,7 +126,10 @@ public class Vue1 extends Vue {
 		// b13 contient les boutons start/stop/restart?
 		GridLayout grille_b131 = new GridLayout( 3 , 1 );
 		JPanel b131 = new JPanel(grille_b131);
-		b13.add( b131 );
+
+		GridBagConstraints contrainte_b113 = new GridBagConstraints();
+		donnerContrainte(contrainte_b113, 0,0, 1,1, 100 , 100 , GridBagConstraints.BOTH );
+		b13.add( b131 , contrainte_b113 );
 
 		b131.add( bouton_start );
 		b131.add( bouton_stop );
@@ -152,10 +166,15 @@ public class Vue1 extends Vue {
 		 */
 		try {
 			
+			
 			List<Commande> listeCommande = this.model.getListeCommande();
-			int taille = listeCommande.size();
 			
+			TableauCommande tableau = new TableauCommande( listeCommande , this.controleur  );			
+			JScrollPane scroll = new JScrollPane( tableau );
 			
+			GridBagConstraints contrainte_tableau = new GridBagConstraints();
+			donnerContrainte(contrainte_tableau, 0,0, 1,1, 100 , 100 , GridBagConstraints.BOTH );
+			b3.add( scroll , contrainte_tableau );
 			
 			
 		} catch (SQLException e) {

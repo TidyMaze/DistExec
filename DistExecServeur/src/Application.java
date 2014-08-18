@@ -21,6 +21,9 @@ public class Application {
 			DatabaseHelper dbh = new DatabaseHelper(cs);
 			dbh.create();
 			
+			// a supprimer par la suite
+			dbh.getCommandeDao().create( new Commande("nom test" , "descrip test" , "script test" ) );
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -40,12 +43,7 @@ public class Application {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		// Exécution du serveur
-		//model.getServeur().start();
-		
-		//System.out.println( model.getServeur().getIpLocal() + " " + model.getServeur().getPort() );
-		
+				
 	}
 
 }

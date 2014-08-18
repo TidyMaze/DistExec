@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import BD.Commande;
+import MonTableau.JButtonCommande;
 
 
 
@@ -94,6 +95,7 @@ public class Controleur implements ActionListener {
 		}
 		else if( e.getSource() == vue.bouton_annuler ) {
 			vue.viderChamps();
+			
 		}
 		else if( e.getSource() == vue.choisir_script) {
 			
@@ -109,6 +111,20 @@ public class Controleur implements ActionListener {
 	        	vue.champ_script.setText( "" );
 	        }
 			
+		}
+		else if( bouton.getText().equals("Modifier") ) {
+			System.out.println("Modifier");
+		}
+		else if( bouton.getText().equals("Supprimer") ) {
+			System.out.println("Supprimer");
+			
+			Commande commande = ( (JButtonCommande)bouton ).getCommande();
+			try {
+				this.model.supprimerCommande( commande );
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		else  {
 

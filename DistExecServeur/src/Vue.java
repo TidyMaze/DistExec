@@ -3,11 +3,18 @@ import java.awt.GridBagConstraints;
 import java.awt.Label;
 import java.awt.TextArea;
 import java.awt.TextField;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+
+import BD.Commande;
+import MonTableau.TableModelCommande;
+import MonTableau.TableauCommande;
 
 
 public abstract class Vue extends JFrame implements Observer {
@@ -23,15 +30,18 @@ public abstract class Vue extends JFrame implements Observer {
 	protected JButton bouton_stop;
 	protected JButton bouton_restart;
 	
-	protected Label label_port_valeur;
-	protected Label label_ipLocal_valeur;
+	protected JLabel label_port_valeur;
+	protected JLabel label_ipLocal_valeur;
 	
 	protected JButton bouton_ok = new JButton("OK");
 	protected JButton bouton_annuler = new JButton("Annuler");
 	protected TextField champ_nom;
 	protected TextField champ_description;
 	protected JButton choisir_script;
-	protected Label champ_script;
+	protected JLabel champ_script;
+	
+	protected TableauCommande tableau;
+	
 	
 	public Vue( Model m , Controleur c ) {
 		super("DisExec Serveur");
@@ -52,8 +62,8 @@ public abstract class Vue extends JFrame implements Observer {
 		this.bouton_stop.setEnabled( false );
 		
 		
-		this.label_port_valeur = new Label("non définie");
-		this.label_ipLocal_valeur = new Label("non définie");
+		this.label_port_valeur = new JLabel("non définie");
+		this.label_ipLocal_valeur = new JLabel("non définie");
 		
 		
 		this.bouton_ok = new JButton("OK");
@@ -61,7 +71,17 @@ public abstract class Vue extends JFrame implements Observer {
 		this.champ_nom = new TextField();
 		this.champ_description = new TextField();
 		this.choisir_script = new JButton("Choisir script");
-		this.champ_script = new Label("");
+		this.champ_script = new JLabel("");
+		
+		
+		try {
+			List<Commande> listeCommande = this.model.getListeCommande();
+			tableau = new TableauCommande( listeCommande , this.controleur  );	
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		 	
 	}
 	
 	
@@ -94,15 +114,34 @@ public abstract class Vue extends JFrame implements Observer {
 			this.label_ipLocal_valeur.setText( "" + this.model.getIpLocal() );
 			this.label_port_valeur.setText( "" + this.model.getPort() );
 		}
+		else if( code == Code.UPDATE_CREATE_COMMANDE ) {
+			this.viderChamps();
+			this.modifierDonneesTableau();
+		}
+		else if( code == Code.UPDATE_DELETE_COMMANDE ) {
+			this.modifierDonneesTableau();		
+		}
 		else {
 
 		}
 	}
 	
+	public void modifierDonneesTableau() {
+		System.out.println("modification tableau ");
+		try {
+			this.tableau.setModel( new TableModelCommande( this.model.getListeCommande() , controleur) );
+			( (TableModelCommande) this.tableau.getModel() ).fireTableDataChanged();
+			this.tableau.repaint();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	public void viderChamps() {
 		this.champ_nom.setText("");
 		this.champ_description.setText("");
+		this.champ_script.setText("");
 	}
 	
 	

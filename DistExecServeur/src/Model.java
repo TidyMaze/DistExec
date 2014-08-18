@@ -32,6 +32,8 @@ public class Model extends Observable {
 		this.miseAjour( Code.START_SERVER );
 	}
 	
+	
+	// serveur
 	public void stopServer() {
 		this.serveur.stop();
 		this.miseAjour( Code.STOP_SERVER );
@@ -51,6 +53,7 @@ public class Model extends Observable {
 	}
 	
 	
+	// commandes / acces BD
 	public List<Commande> getListeCommande() throws SQLException {
 		JdbcConnectionSource cs = new JdbcConnectionSource("jdbc:sqlite:bd.sqlite");
 		DatabaseHelper dbh = new DatabaseHelper(cs);
@@ -63,6 +66,15 @@ public class Model extends Observable {
 		DatabaseHelper dbh = new DatabaseHelper(cs);
 		dbh.getCommandeDao().create( commande );
 		
+		this.miseAjour( Code.UPDATE_CREATE_COMMANDE );
+	}
+	
+	public void supprimerCommande( Commande commande ) throws SQLException {
+		JdbcConnectionSource cs = new JdbcConnectionSource("jdbc:sqlite:bd.sqlite");
+		DatabaseHelper dbh = new DatabaseHelper(cs);
+		dbh.getCommandeDao().delete(commande);
+		
+		this.miseAjour( Code.UPDATE_DELETE_COMMANDE );
 	}
 	
 	
