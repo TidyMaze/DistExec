@@ -1,5 +1,6 @@
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -74,7 +75,7 @@ public class ThreadClient extends Thread {
 							
 						}
 						else {
-							// ne poss�de pas le champs etat
+							// ne possède pas le champs etat
 							
 						}	
 						
@@ -96,49 +97,59 @@ public class ThreadClient extends Thread {
 	}
 	
 	private void executerCommande( JSONObject json ) {
-		
-		if( json.has("id") ) {
+
+		if( !json.has("id") ) return; 	// normalement impossible
+
+		// recupération de l'identifiant de la commande
+		int id = -1;
+		try {
+			id = json.getInt("id");
+		} catch (JSONException e) {
+			// Ne devrait jamais passer par là, car on a déja vérifier que la clé "id" existe
+			e.printStackTrace();
+		}
+
+		try {
+
+			// recherche du script dans la BD
+			JdbcConnectionSource cs = new JdbcConnectionSource("jdbc:sqlite:bd.sqlite");
+			DatabaseHelper dbh = new DatabaseHelper(cs);
+			Dao<Commande, Integer> commandeDao = dbh.getCommandeDao();						
+
+			Commande la_commande = commandeDao.queryForId(id);
 			
-			// recup�ration de l'identifiant de la commande
-			int id = -1;
-			try {
-				id = json.getInt("id");
-			} catch (JSONException e) {
-				// Ne devrait jamais passer par la, car on a d�j� v�rifi� s'il poss�de cette cl�
-				e.printStackTrace();
+			File script = new File( la_commande.getScript() );
+			System.out.println( la_commande.getScript() + " " + script.getAbsolutePath() );
+			
+			if( !script.exists() ) {
+				System.out.println("le fichier script n'existe pas sur le serveur");
+				
+				// le dire au client 
+				//
+				//
+				//
 			}
-			
-			try {
+			else {
 				
-				// recherche du script dans la BD
-				JdbcConnectionSource cs = new JdbcConnectionSource("jdbc:sqlite:bd.sqlite");
-				DatabaseHelper dbh = new DatabaseHelper(cs);
-				Dao<Commande, Integer> commandeDao = dbh.getCommandeDao();						
-				
-				Commande la_commande = commandeDao.queryForId(id);
+				String extension = la_commande.getScript().substring( la_commande.getScript().indexOf('.') );				
 				
 				
 				// execution de la commande
 				try {
 					
 					Runtime.getRuntime().exec( "cmd /c start " + la_commande.getScript() );
-					
+
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 
-				
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}			
-			
-		}
-		else {
-			// ne poss�de pas le champs id
-			
-		}
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}			
 		
 	}
 		

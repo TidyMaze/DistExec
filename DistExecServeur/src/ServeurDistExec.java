@@ -47,7 +47,8 @@ public class ServeurDistExec {
 							ThreadClient tClient = new ThreadClient(socketClient); 	
 							tClient.start();
 						} catch (IOException e) {
-							e.printStackTrace();
+							//e.printStackTrace();
+							System.out.println("une erreur est apparu, ou le serveur est arrêté");
 						}
 					}
 				}

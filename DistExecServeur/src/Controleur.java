@@ -118,8 +118,9 @@ public class Controleur implements ActionListener {
 			
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 	            File file = fc.getSelectedFile();
-	            System.out.println("Opening: " + file.getName() );
-	            vue.champ_script.setText( file.toURI().toString() );
+	            System.out.println(" fichier : " + file.getAbsolutePath() );
+	            vue.champ_script.setText( file.getAbsolutePath().replace( " ", "%20" ) );
+	            //file.toURI().toString()
 	        } else {
 	        	System.out.println("Open command cancelled by user." );
 	        	vue.champ_script.setText( "" );
