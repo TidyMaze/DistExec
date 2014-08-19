@@ -38,7 +38,7 @@ public class Model extends Observable {
 		this.miseAjour( Code.STOP_SERVER );
 	}
 	
-	public void resartServer() {
+	public void restartServer() {
 		this.serveur.restart();
 		this.miseAjour( Code.RESTART_SERVER );
 	}

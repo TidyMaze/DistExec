@@ -64,7 +64,7 @@ public class Controleur implements ActionListener {
 			this.model.stopServer();
 		}
 		else if( e.getSource() == vue.bouton_restart ) {
-			this.model.resartServer();
+			this.model.restartServer();
 		}
 		
 		
