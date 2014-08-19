@@ -3,9 +3,12 @@
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Enumeration;
 
 
 public class ServeurDistExec {
@@ -93,6 +96,28 @@ public class ServeurDistExec {
 	}	
 	
 	public String getIpLocal() {
+		
+		try {
+			
+			for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+                NetworkInterface intf = (NetworkInterface) en.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                    InetAddress inetAddress = (InetAddress) enumIpAddr.nextElement();
+                    if ( !inetAddress.isLoopbackAddress() ) {
+                        String ipAddress=inetAddress.getHostAddress().toString();
+                        System.out.println("IP address " + ipAddress);
+                        return ipAddress;
+                    }
+                }
+            }
+				
+			
+		} catch (SocketException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		return null;
+		/*
 		try {
 			return InetAddress.getLocalHost().getHostAddress();
 		} catch (UnknownHostException e) {
@@ -100,6 +125,7 @@ public class ServeurDistExec {
 			e.printStackTrace();
 			return "erreur, impossible d'obtenir l'adresse ip local";
 		}
+		*/
 	}
 	
 }
