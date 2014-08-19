@@ -35,10 +35,6 @@ public class TableModelCommande extends AbstractTableModel {
 		return this.data.size();
 	}
 
-	@Override  
-    public void fireTableDataChanged() {  
-        super.fireTableDataChanged();  
-    }  
 	
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
@@ -54,15 +50,6 @@ public class TableModelCommande extends AbstractTableModel {
 		case 3:
 			final JButtonCommande buttonModifier = new JButtonCommande( "Modifier" , this.data.get(rowIndex) );
 			buttonModifier.addActionListener( this.controleur );
-			/*
-			buttonModifier.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent arg0) {
-                	System.out.println("ModifierModifierModifierModifier");
-                    JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(buttonModifier), 
-                            "Button clicked for row " + buttonModifier.getCommande().getNom() );
-                }
-            });
-            */
             return buttonModifier;
             
 		case 4:
@@ -74,7 +61,17 @@ public class TableModelCommande extends AbstractTableModel {
 			return "Erreur";
 		}
 		
-	}
+	}	
+	/*
+	buttonModifier.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent arg0) {
+        	System.out.println("ModifierModifierModifierModifier");
+            JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(buttonModifier), 
+                    "Button clicked for row " + buttonModifier.getCommande().getNom() );
+        }
+    });
+    */
+	
 	
 	@Override
     public boolean isCellEditable( int row, int column ) {
@@ -84,6 +81,11 @@ public class TableModelCommande extends AbstractTableModel {
 	
 	public List<Commande> getData() {
 		return this.data;
+	}
+	
+	public void setData( List<Commande> c ) {
+		this.data = c;
+		fireTableDataChanged();
 	}
 		
 }

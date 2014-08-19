@@ -12,25 +12,16 @@ import java.util.EventObject;
 import java.util.List;
 
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.ScrollPaneLayout;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
-import javax.swing.event.CellEditorListener;
-import javax.swing.table.TableCellEditor;
 
 import BD.Commande;
 
-import MonTableau.TableModelCommande;
-import MonTableau.TableauCommande;
-import MonTableau.TableauJButtonEditor;
-import MonTableau.TableauJButtonRenderer;
+import MonTableau.*;
 
 
 
@@ -164,26 +155,25 @@ public class Vue1 extends Vue {
 		/*
 		 * panneau liste des commandes
 		 */
-		try {
-			
-			
-			List<Commande> listeCommande = this.model.getListeCommande();
-			
-			TableauCommande tableau = new TableauCommande( listeCommande , this.controleur  );			
-			JScrollPane scroll = new JScrollPane( tableau );
-			
-			GridBagConstraints contrainte_tableau = new GridBagConstraints();
-			donnerContrainte(contrainte_tableau, 0,0, 1,1, 100 , 100 , GridBagConstraints.BOTH );
-			b3.add( scroll , contrainte_tableau );
-			
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-		
+
+		JTable LeTableau = new JTable( this.tableau );
+		LeTableau.getColumn("Modifier").setCellRenderer( new TableauJButtonRenderer() );
+		LeTableau.getColumn("Modifier").setCellEditor( new TableauJButtonEditor() ); 
+
+		LeTableau.getColumn("Supprimer").setCellRenderer( new TableauJButtonRenderer() );
+		LeTableau.getColumn("Supprimer").setCellEditor( new TableauJButtonEditor() ); 
+
+		LeTableau.setPreferredScrollableViewportSize( this.getPreferredSize());//thanks mKorbel +1 http://stackoverflow.com/questions/10551995/how-to-set-jscrollpane-layout-to-be-the-same-as-jtable
+		LeTableau.getColumn("Modifier").setPreferredWidth(100);//so buttons will fit and not be shown butto..
+		LeTableau.getColumn("Supprimer").setPreferredWidth(120);
+
+
+		//TableauCommande tableau = new TableauCommande( listeCommande , this.controleur  );			
+		JScrollPane scroll = new JScrollPane( LeTableau );
+
+		GridBagConstraints contrainte_tableau = new GridBagConstraints();
+		donnerContrainte(contrainte_tableau, 0,0, 1,1, 100 , 100 , GridBagConstraints.BOTH );
+		b3.add( scroll , contrainte_tableau );
 		
 
 		// réarrange la taille de la fenetre

@@ -11,6 +11,7 @@ import javax.swing.SwingUtilities;
 
 import BD.Commande;
 import MonTableau.JButtonCommande;
+import MonTableau.TableModelCommande;
 
 
 
@@ -82,14 +83,33 @@ public class Controleur implements ActionListener {
 				String description = vue.getChampDescription();
 				String script = vue.getChampScript();
 				
-				try {
-					this.model.ajouterCommande( new Commande( nom , description , script ) );
-					vue.viderChamps();
-				} catch (SQLException exception ) {
-					// impossible de créer la nouvelle commande dans la BD !!!
-					// prévenir le client via l'interface
-					exception.printStackTrace();
+				if( vue.modifieUneCommande() ) {
+					
+					Commande c = vue.getCommandeAModifier();
+					c.setNom( nom );
+					c.setDescription(description);
+					c.setScript(script);
+					
+					try {
+						this.model.modifierCommande( c );
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
 				}
+				else {
+					
+					try {
+						this.model.ajouterCommande( new Commande( nom , description , script ) );
+					} catch (SQLException exception ) {
+						// impossible de créer la nouvelle commande dans la BD !!!
+						// prévenir le client via l'interface
+						// le nom est déja utilisé/pris
+						exception.printStackTrace();
+					}
+					
+				}			
 			}
 			
 		}
@@ -114,6 +134,8 @@ public class Controleur implements ActionListener {
 		}
 		else if( bouton.getText().equals("Modifier") ) {
 			System.out.println("Modifier");
+			Commande commande = ( (JButtonCommande)bouton ).getCommande();
+			vue.modificationCommande( commande );
 		}
 		else if( bouton.getText().equals("Supprimer") ) {
 			System.out.println("Supprimer");

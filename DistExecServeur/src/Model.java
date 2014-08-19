@@ -66,7 +66,7 @@ public class Model extends Observable {
 		DatabaseHelper dbh = new DatabaseHelper(cs);
 		dbh.getCommandeDao().create( commande );
 		
-		this.miseAjour( Code.UPDATE_CREATE_COMMANDE );
+		this.miseAjour( Code.UPDATE_LIST_CREATE_COMMANDE );
 	}
 	
 	public void supprimerCommande( Commande commande ) throws SQLException {
@@ -74,7 +74,15 @@ public class Model extends Observable {
 		DatabaseHelper dbh = new DatabaseHelper(cs);
 		dbh.getCommandeDao().delete(commande);
 		
-		this.miseAjour( Code.UPDATE_DELETE_COMMANDE );
+		this.miseAjour( Code.UPDATE_LIST_DELETE_COMMANDE );
+	}
+	
+	public void modifierCommande( Commande commande ) throws SQLException {
+		JdbcConnectionSource cs = new JdbcConnectionSource("jdbc:sqlite:bd.sqlite");
+		DatabaseHelper dbh = new DatabaseHelper(cs);
+		dbh.getCommandeDao().update(commande);
+		
+		this.miseAjour( Code.UPDATE_LIST_UPDATE_COMMANDE );
 	}
 	
 	
