@@ -1,15 +1,8 @@
-import java.awt.BorderLayout;
-import java.awt.Button;
-import java.awt.Component;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Label;
-import java.awt.TextArea;
-import java.awt.TextField;
-import java.sql.SQLException;
-import java.util.EventObject;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -19,14 +12,17 @@ import javax.swing.JTable;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 
-import BD.Commande;
-
 import MonTableau.*;
 
 
 
 public class Vue1 extends Vue {
 
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	public Vue1(Model m, Controleur c) {
 		super(m, c);
@@ -93,15 +89,8 @@ public class Vue1 extends Vue {
 		GridBagLayout grille_b12 = new GridBagLayout(  );
 		GridBagConstraints contrainte_b12 = new GridBagConstraints();
 		JPanel b12 = new JPanel(grille_b12);
-		donnerContrainte(contrainte_b12, 0,1, 1,1, 100 , 5 , GridBagConstraints.BOTH );
+		donnerContrainte(contrainte_b12, 0,1, 1,1, 100 , 30 , GridBagConstraints.BOTH );
 		b1.add( b12 , contrainte_b12 );
-
-
-		GridBagLayout grille_b13 = new GridBagLayout(  );
-		GridBagConstraints contrainte_b13 = new GridBagConstraints();
-		JPanel b13 = new JPanel(grille_b13);
-		donnerContrainte(contrainte_b13, 0,2, 1,1, 100 , 25 , GridBagConstraints.BOTH  );
-		b1.add( b13 , contrainte_b13 );
 
 
 		// b11 contient les infos du serveur
@@ -113,18 +102,21 @@ public class Vue1 extends Vue {
 		b111.add( label_ipLocal_valeur );
 		b111.add( label_port );
 		b111.add( label_port_valeur );
-
+		
+		b111.setPreferredSize( this.getPreferredSize() );
+		
+		
 		// b13 contient les boutons start/stop/restart?
-		GridLayout grille_b131 = new GridLayout( 3 , 1 );
-		JPanel b131 = new JPanel(grille_b131);
+		GridLayout grille_b121 = new GridLayout( 3 , 1 );
+		JPanel b121 = new JPanel(grille_b121);
 
-		GridBagConstraints contrainte_b113 = new GridBagConstraints();
-		donnerContrainte(contrainte_b113, 0,0, 1,1, 100 , 100 , GridBagConstraints.BOTH );
-		b13.add( b131 , contrainte_b113 );
+		GridBagConstraints contrainte_b121 = new GridBagConstraints();
+		donnerContrainte(contrainte_b121, 0,0, 1,1, 100 , 100 , GridBagConstraints.BOTH );
+		b12.add( b121 , contrainte_b121 );
 
-		b131.add( bouton_start );
-		b131.add( bouton_stop );
-		b131.add( bouton_restart );
+		b121.add( bouton_start );
+		b121.add( bouton_stop );
+		b121.add( bouton_restart );
 
 
 		/*
@@ -156,20 +148,20 @@ public class Vue1 extends Vue {
 		 * panneau liste des commandes
 		 */
 
-		JTable LeTableau = new JTable( this.tableau );
-		LeTableau.getColumn("Modifier").setCellRenderer( new TableauJButtonRenderer() );
-		LeTableau.getColumn("Modifier").setCellEditor( new TableauJButtonEditor() ); 
+		JTable leTableau = new JTable( this.modelTableau );
+		leTableau.getColumn("Modifier").setCellRenderer( new TableauJButtonRenderer() );
+		leTableau.getColumn("Modifier").setCellEditor( new TableauJButtonEditor() ); 
 
-		LeTableau.getColumn("Supprimer").setCellRenderer( new TableauJButtonRenderer() );
-		LeTableau.getColumn("Supprimer").setCellEditor( new TableauJButtonEditor() ); 
+		leTableau.getColumn("Supprimer").setCellRenderer( new TableauJButtonRenderer() );
+		leTableau.getColumn("Supprimer").setCellEditor( new TableauJButtonEditor() ); 
 
-		LeTableau.setPreferredScrollableViewportSize( this.getPreferredSize());//thanks mKorbel +1 http://stackoverflow.com/questions/10551995/how-to-set-jscrollpane-layout-to-be-the-same-as-jtable
-		LeTableau.getColumn("Modifier").setPreferredWidth(100);//so buttons will fit and not be shown butto..
-		LeTableau.getColumn("Supprimer").setPreferredWidth(120);
+		leTableau.setPreferredScrollableViewportSize( this.getPreferredSize() );//thanks mKorbel +1 http://stackoverflow.com/questions/10551995/how-to-set-jscrollpane-layout-to-be-the-same-as-jtable
+		leTableau.getColumn("Modifier").setPreferredWidth(100);//so buttons will fit and not be shown butto..
+		leTableau.getColumn("Supprimer").setPreferredWidth(120);
 
-
+		
 		//TableauCommande tableau = new TableauCommande( listeCommande , this.controleur  );			
-		JScrollPane scroll = new JScrollPane( LeTableau );
+		JScrollPane scroll = new JScrollPane( leTableau );
 
 		GridBagConstraints contrainte_tableau = new GridBagConstraints();
 		donnerContrainte(contrainte_tableau, 0,0, 1,1, 100 , 100 , GridBagConstraints.BOTH );

@@ -1,6 +1,4 @@
 import java.sql.SQLException;
-import java.util.List;
-
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 
 import BD.Commande;
@@ -22,7 +20,7 @@ public class Application {
 			dbh.create();
 			
 			// a supprimer par la suite
-			dbh.getCommandeDao().create( new Commande("nom test" , "descrip test" , "script test" ) );
+			//dbh.getCommandeDao().create( new Commande("nom test" , "descrip test" , "script test" ) );
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

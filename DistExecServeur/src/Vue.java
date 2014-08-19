@@ -1,7 +1,5 @@
 import java.awt.Container;
 import java.awt.GridBagConstraints;
-import java.awt.Label;
-import java.awt.TextArea;
 import java.awt.TextField;
 import java.sql.SQLException;
 import java.util.List;
@@ -11,7 +9,6 @@ import java.util.Observer;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.event.TableModelEvent;
 
 import BD.Commande;
 import MonTableau.TableModelCommande;
@@ -19,6 +16,10 @@ import MonTableau.TableModelCommande;
 
 public abstract class Vue extends JFrame implements Observer {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	// partie MVC
 	protected Model model;
 	protected Controleur controleur;
@@ -39,9 +40,9 @@ public abstract class Vue extends JFrame implements Observer {
 	protected TextField champ_description;
 	protected JButton choisir_script;
 	protected JLabel champ_script;
-	protected Commande modificationCommande = null;
+	protected Commande commandeAModifier = null;
 	
-	protected TableModelCommande tableau;
+	protected TableModelCommande modelTableau;
 	
 	
 	public Vue( Model m , Controleur c ) {
@@ -77,7 +78,7 @@ public abstract class Vue extends JFrame implements Observer {
 		
 		try {
 			List<Commande> listeCommande = this.model.getListeCommande();
-			tableau = new TableModelCommande( listeCommande , this.controleur  );	
+			modelTableau = new TableModelCommande( listeCommande , this.controleur  );	
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -115,6 +116,7 @@ public abstract class Vue extends JFrame implements Observer {
 			this.label_ipLocal_valeur.setText( "" + this.model.getIpLocal() );
 			this.label_port_valeur.setText( "" + this.model.getPort() );
 		}
+		
 		else if( code == Code.UPDATE_LIST_CREATE_COMMANDE ) {
 			this.viderChamps();
 			this.modifierDonneesTableau();
@@ -126,25 +128,26 @@ public abstract class Vue extends JFrame implements Observer {
 			this.viderChamps();
 			this.modifierDonneesTableau();
 		}
+		
 		else {
 			
 		}
 	}
 	
 	
-	public void modificationCommande( Commande c ) {
+	public void setChamps( Commande c ) {
 		this.champ_nom.setText( c.getNom() );
 		this.champ_description.setText( c.getDescription() );
 		this.champ_script.setText( c.getScript() );
-		this.modificationCommande = c;
+		this.commandeAModifier = c;
 	}
 	
 	public boolean modifieUneCommande() {
-		return this.modificationCommande != null;
+		return this.commandeAModifier != null;
 	}
 	
 	public Commande getCommandeAModifier() {
-		return this.modificationCommande;
+		return this.commandeAModifier;
 	}
 	
 	
@@ -153,7 +156,7 @@ public abstract class Vue extends JFrame implements Observer {
 		try {
 			
 			List<Commande> listeCommande = this.model.getListeCommande();
-			this.tableau.setData( listeCommande );
+			this.modelTableau.setData( listeCommande );
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -165,7 +168,7 @@ public abstract class Vue extends JFrame implements Observer {
 		this.champ_nom.setText("");
 		this.champ_description.setText("");
 		this.champ_script.setText("");
-		this.modificationCommande = null;
+		this.commandeAModifier = null;
 	}
 	
 	

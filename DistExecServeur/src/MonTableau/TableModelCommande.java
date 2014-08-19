@@ -1,16 +1,18 @@
 package MonTableau;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
 
 import BD.Commande;
 
 public class TableModelCommande extends AbstractTableModel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static final String[] nomColonne = new String[] { "Nom" , "Description" , "Script" , "Modifier" , "Supprimer" };
 	private List<Commande> data;
 	private ActionListener controleur;

@@ -26,14 +26,13 @@ public class Model extends Observable {
 		this.notifyObservers( code );
 	}
 	
-		
+	
+	/* partie serveur */
 	public void startServer() {
 		this.serveur.start();
 		this.miseAjour( Code.START_SERVER );
 	}
 	
-	
-	// serveur
 	public void stopServer() {
 		this.serveur.stop();
 		this.miseAjour( Code.STOP_SERVER );

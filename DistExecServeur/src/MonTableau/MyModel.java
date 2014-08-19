@@ -1,9 +1,7 @@
 package MonTableau;
 
-import java.awt.*;  
 import java.awt.event.*;  
 import java.util.*;  
-import javax.swing.*;  
 import javax.swing.table.*;  
 
 import BD.Commande;
@@ -11,7 +9,11 @@ import BD.Commande;
 import java.util.List;  
    
 public class MyModel extends AbstractTableModel {  
-    private List<Commande> data = new ArrayList();  
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private List<Commande> data = new ArrayList<Commande>();  
    
     @Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
@@ -24,8 +26,7 @@ public class MyModel extends AbstractTableModel {
 			return this.data.get(rowIndex).getDescription();
 		case 2:
 			final JButtonCommande buttonModifier = new JButtonCommande( "Modifier" , this.data.get(rowIndex) );
-			buttonModifier.addActionListener( new ActionListener(){  
-	            int count;  
+			buttonModifier.addActionListener( new ActionListener(){   
 	            public void actionPerformed(ActionEvent e) {  
 	                 System.out.println("ok");
 	                 JButtonCommande bouton = (JButtonCommande) e.getSource();
