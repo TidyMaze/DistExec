@@ -70,7 +70,7 @@ public class Controleur implements ActionListener {
 		
 		// bouton ajouter/modifier/annuler (édition d'une commande)
 		else if( e.getSource() == vue.bouton_ok ) {
-
+			
 			if( vue.getChampNom().length() <= 0 ) {
 				System.out.println("champ nom vide");
 				JOptionPane.showMessageDialog( JOptionPane.getFrameForComponent(bouton), "Vous n'avez pas donner de nom à votre commande" );
@@ -78,6 +78,10 @@ public class Controleur implements ActionListener {
 			else if ( vue.getChampScript().length() <= 0 ) {
 				System.out.println("pas de script");
 				JOptionPane.showMessageDialog( JOptionPane.getFrameForComponent(bouton), "Vous n'avez pas choisis de script" );
+			}
+			else if( !( new File(vue.getChampScript()) ).isFile() ) {
+				System.out.println("Le chemin du script ne désigne pas un fichier");
+				JOptionPane.showMessageDialog( JOptionPane.getFrameForComponent(bouton), "Le chemin du script ne désigne pas un fichier" );
 			}
 			else {
 				

@@ -32,7 +32,7 @@ public class ThreadClient extends Thread {
 		
 		this.socketClient = socketClient;
 		
-		InputStream is = socketClient.getInputStream();
+		InputStream is = this.socketClient.getInputStream();
 		InputStreamReader isr = new InputStreamReader(is);
 		br = new BufferedReader(isr);
 		

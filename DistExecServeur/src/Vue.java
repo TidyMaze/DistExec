@@ -39,7 +39,7 @@ public abstract class Vue extends JFrame implements Observer {
 	protected TextField champ_nom;
 	protected TextField champ_description;
 	protected JButton choisir_script;
-	protected JLabel champ_script;
+	protected TextField champ_script;
 	protected Commande commandeAModifier = null;
 	
 	protected TableModelCommande modelTableau;
@@ -73,7 +73,7 @@ public abstract class Vue extends JFrame implements Observer {
 		this.champ_nom = new TextField();
 		this.champ_description = new TextField();
 		this.choisir_script = new JButton("Choisir script");
-		this.champ_script = new JLabel("");
+		this.champ_script = new TextField("");
 		
 		
 		try {

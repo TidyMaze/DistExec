@@ -139,7 +139,7 @@ public class Vue1 extends Vue {
 		b21.add( label_description );
 		b21.add( this.champ_description );
 		b21.add( this.choisir_script );
-		b21.add( new JScrollPane( this.champ_script , JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED , JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED ) );
+		b21.add( this.champ_script );
 		b21.add( this.bouton_ok );
 		b21.add( this.bouton_annuler );
 

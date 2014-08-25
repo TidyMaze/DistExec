@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,8 +21,12 @@ import com.example.distexec.BD.Serveur;
 import com.example.distexec.BD.Commande;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -75,6 +80,13 @@ public class ListeCommandes extends Activity {
 		
 	}
 
+	
+	private boolean isNetworkAvailable() {
+	    ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+	    return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+	}
+	
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -131,6 +143,10 @@ public class ListeCommandes extends Activity {
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+					}
+					catch( ConnexionException e ) {
+						e.printStackTrace();
+						Log.e("info" , "exception : " + e.getMessage() );
 					}
 				}
 			});

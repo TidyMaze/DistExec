@@ -8,7 +8,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class NetworkUtil {
-	public static Socket findSocket(String dstName, int dstPortMin, int dstPortMax) throws ConnectException{
+	public static Socket findSocket(String dstName, int dstPortMin, int dstPortMax) throws ConnexionException {
 
 		
 		
@@ -22,6 +22,6 @@ public class NetworkUtil {
 				e.printStackTrace();
 			}
 		}
-		throw new ConnectException("Pas de port dispo ou mauvaise connexion, rtfm noob");
+		throw new ConnexionException("Pas de port dispo ou mauvaise connexion, rtfm noob");
 	}
 }

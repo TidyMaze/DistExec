@@ -22,6 +22,7 @@ import com.j256.ormlite.dao.Dao;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -146,6 +147,10 @@ public class VueCommande extends Activity {
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+				}
+				catch( ConnexionException e ) {
+					e.printStackTrace();
+					Log.e("info" , "exception : " + e.getMessage() );
 				}
 
 			}
