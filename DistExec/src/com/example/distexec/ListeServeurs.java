@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +20,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.distexec.BD.DatabaseHelper;
 import com.example.distexec.BD.Serveur;
@@ -68,10 +72,18 @@ public class ListeServeurs extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position,
 					long id) {
-				int idServ = ((StringItem)listeServeurs.getItemAtPosition(position)).second;
-				Intent i = new Intent(ListeServeurs.this, ListeCommandes.class);
-				i.putExtra("idserv", idServ);
-				startActivity(i);
+				
+				if( isConnected() ) {
+					int idServ = ((StringItem)listeServeurs.getItemAtPosition(position)).second;
+					Intent i = new Intent(ListeServeurs.this, ListeCommandes.class);
+					i.putExtra("idserv", idServ);
+					startActivity(i);
+				}
+				else {
+					Toast.makeText(getApplicationContext(), "Vous devez connecter votre appareil à internet", Toast.LENGTH_LONG).show();
+				}
+				
+				
 			}
 		});
         
@@ -99,7 +111,20 @@ public class ListeServeurs extends Activity {
     }
     
     
-
+	private boolean isConnected() {
+		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo netInfo = cm.getActiveNetworkInfo();
+		if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+			return true;
+		}
+		return false;
+		/* a utiliser avec
+		 *   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+		 *  dans le manifest
+		 */
+	}
+	
+	
 
     @Override
 	protected void onResume() {

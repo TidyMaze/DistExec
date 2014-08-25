@@ -81,10 +81,13 @@ public class ListeCommandes extends Activity {
 	}
 
 	
-	private boolean isNetworkAvailable() {
-	    ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-	    NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-	    return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+	private boolean isConnected() {
+		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo netInfo = cm.getActiveNetworkInfo();
+		if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+			return true;
+		}
+		return false;
 	}
 	
 	@Override
@@ -151,49 +154,49 @@ public class ListeCommandes extends Activity {
 				}
 			});
 			connexion_serveur.start();
-            while( json_reponseServeur == null ) {
-            	try {
+			while( json_reponseServeur == null ) {
+				try {
 					Thread.sleep(100);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-            }
-			
-            // suppression des anciennes commandes enregistrés dans la BD
-            DatabaseHelper dbh = new DatabaseHelper(ListeCommandes.this);
-    		Dao<Commande, Integer> commandeDAO = dbh.getCommandeDao();
-            try {
+			}
+
+			// suppression des anciennes commandes enregistrés dans la BD
+			DatabaseHelper dbh = new DatabaseHelper(ListeCommandes.this);
+			Dao<Commande, Integer> commandeDAO = dbh.getCommandeDao();
+			try {
 				commandeDAO.delete( commandeDAO.queryForAll() );
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-            System.out.println("suppression ancienne commande terminé");
-            
-            // modification des données JSON récupéré
-            List<StringItem> listeLignes = new ArrayList<StringItem>();
-            JSONArray json_listeCommande = json_reponseServeur.getJSONArray("commandes");
-            for( int i = 0 ; i < json_listeCommande.length() ; i++ ) {
-                JSONObject commande = json_listeCommande.getJSONObject( i );
-                int id_commande = commande.getInt("id");
-                String nom_commande = commande.getString("nom");
-                String description_commande = commande.getString("description");
-                String script_commande = commande.getString("script");
-                
-                // ajout de la commande dans la liste (pour la ListView)
-                listeLignes.add( new StringItem( nom_commande , id_commande ) );
+			System.out.println("suppression ancienne commande terminé");
 
-                // ajout de la commande dans la BD
-                Commande nouvelle_commande = new Commande( nom_commande, description_commande, script_commande, id_commande );
-                commandeDAO.create( nouvelle_commande ); 
-            }
-            System.out.println("modification des données recu terminée");
-            
-            // ajout des données dans la ListView
-            this.listeCommandes.setAdapter(new ArrayAdapter<StringItem>(getBaseContext(), android.R.layout.simple_list_item_1, listeLignes));
-            System.out.println("la liste des commandes à été affichée");
-            
+			// modification des données JSON récupéré
+			List<StringItem> listeLignes = new ArrayList<StringItem>();
+			JSONArray json_listeCommande = json_reponseServeur.getJSONArray("commandes");
+			for( int i = 0 ; i < json_listeCommande.length() ; i++ ) {
+				JSONObject commande = json_listeCommande.getJSONObject( i );
+				int id_commande = commande.getInt("id");
+				String nom_commande = commande.getString("nom");
+				String description_commande = commande.getString("description");
+				String script_commande = commande.getString("script");
+
+				// ajout de la commande dans la liste (pour la ListView)
+				listeLignes.add( new StringItem( nom_commande , id_commande ) );
+
+				// ajout de la commande dans la BD
+				Commande nouvelle_commande = new Commande( nom_commande, description_commande, script_commande, id_commande );
+				commandeDAO.create( nouvelle_commande ); 
+			}
+			System.out.println("modification des données recu terminée");
+
+			// ajout des données dans la ListView
+			this.listeCommandes.setAdapter(new ArrayAdapter<StringItem>(getBaseContext(), android.R.layout.simple_list_item_1, listeLignes));
+			System.out.println("la liste des commandes à été affichée");
+
 		} catch (JSONException e) {
 			// json.put() -> if the key is null
 			e.printStackTrace();
@@ -201,8 +204,8 @@ public class ListeCommandes extends Activity {
 			// commandeDAO.create( ... )
 			e.printStackTrace();
 		}
-		
-		
+
+
 	}
 
 	@Override
