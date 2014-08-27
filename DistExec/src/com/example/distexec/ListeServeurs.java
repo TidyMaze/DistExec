@@ -5,10 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -73,17 +70,16 @@ public class ListeServeurs extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view, int position,
 					long id) {
 				
-				if( isConnected() ) {
-					int idServ = ((StringItem)listeServeurs.getItemAtPosition(position)).second;
-					Intent i = new Intent(ListeServeurs.this, ListeCommandes.class);
-					i.putExtra("idserv", idServ);
-					startActivity(i);
-				}
-				else {
-					Toast.makeText(getApplicationContext(), "Vous devez connecter votre appareil à internet", Toast.LENGTH_LONG).show();
+				if( !NetworkUtil.isConnected(getApplicationContext()) ) {
+					System.out.println("ListeServeur.class : android non connecté ! (clic sur un serveur)");
+					Toast.makeText(getApplicationContext(), "Vous devez connecter votre appareil à internet", Toast.LENGTH_SHORT).show();
+					return;
 				}
 				
-				
+				int idServ = ((StringItem)listeServeurs.getItemAtPosition(position)).second;
+				Intent i = new Intent(ListeServeurs.this, ListeCommandes.class);
+				i.putExtra("idserv", idServ);
+				startActivity(i);
 			}
 		});
         
@@ -109,20 +105,6 @@ public class ListeServeurs extends Activity {
 			}
 		});
     }
-    
-    
-	private boolean isConnected() {
-		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo netInfo = cm.getActiveNetworkInfo();
-		if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-			return true;
-		}
-		return false;
-		/* a utiliser avec
-		 *   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-		 *  dans le manifest
-		 */
-	}
 	
 	
 
@@ -132,8 +114,6 @@ public class ListeServeurs extends Activity {
 		
 		this.buildList();
 	}
-
-
 
 
 	@Override

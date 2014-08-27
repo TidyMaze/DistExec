@@ -1,14 +1,5 @@
 package com.example.distexec;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.ConnectException;
-import java.net.Socket;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,12 +12,10 @@ import com.example.distexec.BD.Serveur;
 import com.example.distexec.BD.Commande;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,178 +23,172 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class ListeCommandes extends Activity {
 
-	private static final String IP = null;
-	private static final int PORTMIN = 9301;
-	private static final int PORTMAX = 9305;
+	//private static final String IP = null;
+	//private static final int PORTMIN = 9301;
+	//private static final int PORTMAX = 9305;
 	private Serveur serveur;
-	
-	
+
+	private Handler handler;
+	private static Status[] valeurStatus = Status.values();
+
 	private ListView listeCommandes;
-	
-	JSONObject json_reponseServeur = null;
-	
+
+	private JSONObject json_reponseServeur = null;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_liste_commandes);
-		
+
+		// récupération info serveur
 		int idserv = getIntent().getIntExtra("idserv", -1);
-		
 		DatabaseHelper dbh = new DatabaseHelper(ListeCommandes.this);
 		Dao<Serveur, Integer> serveurDAO = dbh.getServeurDao();
-		
+
 		try {
 			this.serveur = serveurDAO.queryForId(idserv);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		this.listeCommandes = (ListView)findViewById(R.id.listeCommandes);
-		this.listeCommandes.setOnItemClickListener(new OnItemClickListener() {
 
+		// initialisation de la liste
+		this.listeCommandes = (ListView) findViewById(R.id.listeCommandes);
+		this.listeCommandes.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-								
-				int id_commande = ((StringItem)listeCommandes.getItemAtPosition(position)).second;
-				Intent i = new Intent( ListeCommandes.this, VueCommande.class);
+
+				int id_commande = ((StringItem) listeCommandes.getItemAtPosition(position)).second;
+				Intent i = new Intent(ListeCommandes.this, VueCommande.class);
 				i.putExtra("id_commande", id_commande);
-				i.putExtra("id_serveur", serveur.getId() );
+				i.putExtra("id_serveur", serveur.getId());
 				startActivity(i);
-				
 			}
 		});
-		
+
+		// initialisation du handler
+		this.handler = new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+
+				switch (valeurStatus[msg.what]) {
+				
+				case OK:
+					updateListeCommande();
+					break;
+					
+				case ConnexionException:
+					makeToast("Ce serveur n'est pas à l'écoute sur aucun des ports");
+					break;
+					
+				case JSONException:
+					makeToast("Le serveur renvoie quelque chose d'incompréhensible (ce n'est pas du json");
+					break;
+					
+				case ERROR_:
+					makeToast("une erreur est survenue");
+					break;
+					
+				default:
+					makeToast("NE DEVRAIS VRAIMENT PAS ETRE ICI");
+					break;
+				}
+			}
+		};
 	}
 
-	
-	private boolean isConnected() {
-		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo netInfo = cm.getActiveNetworkInfo();
-		if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-			return true;
-		}
-		return false;
-	}
-	
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
+
+		// connecté à internet ?
+		if (!NetworkUtil.isConnected(getApplicationContext())) {
+			System.out.println("ListeCommandes.class : android non connecté ! (onResume)");
+			this.makeToast("Vous devez connecter votre appareil à internet");
+			return; // on sort ici !!
+		}
+
+		// connexion au serveur, en attente de la réponse
+		ThreadListeCommande connexion_serveur = new ThreadListeCommande(this);
+		connexion_serveur.start();
+
+		this.makeToast("Connexion au serveur");
+
+	}
+
+	public void setJSONResponseServeur(JSONObject json_reponse) {
+		this.json_reponseServeur = json_reponse;
+	}
+
+	public Serveur getServeur() {
+		return this.serveur;
+	}
+
+	public Handler getHandler() {
+		return this.handler;
+	}
+
+	public void makeToast(String message) {
+		Toast.makeText(ListeCommandes.this, message, Toast.LENGTH_SHORT).show();
+	}
+
+	public void updateListeCommande() {
+
+		this.supprimerAnciennesCommandes();
+
+		// modification des données JSON récupéré
+		DatabaseHelper dbh = new DatabaseHelper(ListeCommandes.this);
+		Dao<Commande, Integer> commandeDAO = dbh.getCommandeDao();
+		List<StringItem> listeLignes = new ArrayList<StringItem>();
+		JSONArray json_listeCommande;
+
 		try {
 
-			Thread connexion_serveur = new Thread( new Runnable() {
-				@Override
-				public void run() {
+			json_listeCommande = json_reponseServeur.getJSONArray("commandes");
 
-					try {
-
-						// connexion au serveur
-						Socket socket = NetworkUtil.findSocket( serveur.getIp(), PORTMIN, PORTMAX );
-						System.out.println( "port distant : " + socket.getPort() );
-						System.out.println( "port local : " + socket.getLocalPort() );
-
-						// canaux d'écriture
-						OutputStream os = socket.getOutputStream();
-						OutputStreamWriter osw = new OutputStreamWriter(os);
-						PrintWriter pw = new PrintWriter(osw);
-
-						// canaux de lecture
-						InputStream is = socket.getInputStream();
-						InputStreamReader isr = new InputStreamReader(is);
-						BufferedReader br = new BufferedReader(isr);
-
-						// demande la liste des commandes du serveur
-						/* Au format JSON :
-						 * {
-						 * 		etat: "lister"
-						 * }
-						 */
-						JSONObject json_listerCommande = new JSONObject();
-						json_listerCommande.put( "etat" , "lister" );
-						pw.println( json_listerCommande.toString() );
-						pw.flush();
-						System.out.println("demande des commandes envoyé");
-
-						// récupère la liste des commandes du serveur
-						String ligne = null;
-						while( ligne == null ) {
-							ligne = br.readLine(); 	// bloquant !
-						}
-						JSONObject reponse_json = new JSONObject( ligne );  
-						System.out.println("liste des commandes (json) : " + ligne );
-
-						json_reponseServeur = reponse_json;
-
-					}
-					catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					catch( ConnexionException e ) {
-						e.printStackTrace();
-						Log.e("info" , "exception : " + e.getMessage() );
-					}
-				}
-			});
-			connexion_serveur.start();
-			while( json_reponseServeur == null ) {
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-
-			// suppression des anciennes commandes enregistrés dans la BD
-			DatabaseHelper dbh = new DatabaseHelper(ListeCommandes.this);
-			Dao<Commande, Integer> commandeDAO = dbh.getCommandeDao();
-			try {
-				commandeDAO.delete( commandeDAO.queryForAll() );
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			System.out.println("suppression ancienne commande terminé");
-
-			// modification des données JSON récupéré
-			List<StringItem> listeLignes = new ArrayList<StringItem>();
-			JSONArray json_listeCommande = json_reponseServeur.getJSONArray("commandes");
-			for( int i = 0 ; i < json_listeCommande.length() ; i++ ) {
-				JSONObject commande = json_listeCommande.getJSONObject( i );
+			for (int i = 0; i < json_listeCommande.length(); i++) {
+				JSONObject commande = json_listeCommande.getJSONObject(i);
 				int id_commande = commande.getInt("id");
 				String nom_commande = commande.getString("nom");
 				String description_commande = commande.getString("description");
 				String script_commande = commande.getString("script");
 
 				// ajout de la commande dans la liste (pour la ListView)
-				listeLignes.add( new StringItem( nom_commande , id_commande ) );
+				listeLignes.add(new StringItem(nom_commande, id_commande));
 
 				// ajout de la commande dans la BD
-				Commande nouvelle_commande = new Commande( nom_commande, description_commande, script_commande, id_commande );
-				commandeDAO.create( nouvelle_commande ); 
+				Commande nouvelle_commande = new Commande(nom_commande,description_commande, script_commande, id_commande);
+				commandeDAO.create(nouvelle_commande);
 			}
 			System.out.println("modification des données recu terminée");
 
 			// ajout des données dans la ListView
-			this.listeCommandes.setAdapter(new ArrayAdapter<StringItem>(getBaseContext(), android.R.layout.simple_list_item_1, listeLignes));
+			this.listeCommandes.setAdapter(new ArrayAdapter<StringItem>(getBaseContext(), android.R.layout.simple_list_item_1,listeLignes));
 			System.out.println("la liste des commandes à été affichée");
 
 		} catch (JSONException e) {
-			// json.put() -> if the key is null
 			e.printStackTrace();
+			this.makeToast("Les données reçu ne contiennent n'ont pas le format approprié (c'est bien du JSON, mais il manque quelque chose)");
 		} catch (SQLException e) {
-			// commandeDAO.create( ... )
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
+	}
 
+	private void supprimerAnciennesCommandes() {
+		DatabaseHelper dbh = new DatabaseHelper(ListeCommandes.this);
+		Dao<Commande, Integer> commandeDAO = dbh.getCommandeDao();
+		try {
+			commandeDAO.delete(commandeDAO.queryForAll());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("suppression ancienne commande terminé");
 	}
 
 	@Override

@@ -29,6 +29,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class VueCommande extends Activity {
 
@@ -44,7 +45,8 @@ public class VueCommande extends Activity {
 		
 		DatabaseHelper dbh = new DatabaseHelper(VueCommande.this);
 		
-		// récupé
+		
+		// récupération des données concernant le serveur (id...)
 		int idserv = getIntent().getIntExtra("id_serveur", -1);
 		Dao<Serveur, Integer> serveurDAO = dbh.getServeurDao();
 		try {
@@ -53,22 +55,10 @@ public class VueCommande extends Activity {
 			e.printStackTrace();
 		}
 		
+		
 		// récupération des données concernant la commande
 		int id_commande = getIntent().getIntExtra("id_commande", -1);
 		Dao<Commande, Integer> commandeDAO = dbh.getCommandeDao();
-		
-		
-		// --------------------
-		try {
-			for( Commande c : commandeDAO.queryForAll() ) {
-				System.out.println( c.getId() + " ; " + c.getNom() );
-			}
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		// --------------------
-		
 		
 		try {
 			List<Commande> listeCommande = commandeDAO.query( commandeDAO.queryBuilder().where().eq( "idServeur" , id_commande ).prepare() );
@@ -80,6 +70,8 @@ public class VueCommande extends Activity {
 		
 		System.out.println("id commande recu : " + id_commande );
 		System.out.println("commande nom : " + this.commande.getNom() );
+		
+		
 		
 		// affichage des informations
 		TextView nom_commande = (TextView)findViewById(R.id.nom_commande);
@@ -95,7 +87,13 @@ public class VueCommande extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
+				
+				if( !NetworkUtil.isConnected(getApplicationContext()) ) {
+					System.out.println("VueCommande.class : android non connecté ! (clic sur bouton 'executer')");
+					Toast.makeText(getApplicationContext(), "Vous devez connecter votre appareil à internet", Toast.LENGTH_SHORT).show();
+					return;
+				}
+				
 				execuerCommande();
 			}
 		});
