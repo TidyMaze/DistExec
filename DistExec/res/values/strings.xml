@@ -15,5 +15,7 @@
     <string name="commandeNom">Nom de la commande</string>
     <string name="commandeDescription">Description de la commande</string>
     <string name="commandeExecuter">Exécuter</string>
+    <string name="refresh">Refresh</string>
+    <string name="text_info_co"></string>
 
 </resources>

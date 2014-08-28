@@ -19,25 +19,32 @@ import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 public class ListeCommandes extends Activity {
 
-	//private static final String IP = null;
-	//private static final int PORTMIN = 9301;
-	//private static final int PORTMAX = 9305;
+	// private static final String IP = null;
+	// private static final int PORTMIN = 9301;
+	// private static final int PORTMAX = 9305;
 	private Serveur serveur;
 
 	private Handler handler;
 	private static Status[] valeurStatus = Status.values();
 
 	private ListView listeCommandes;
-
 	private JSONObject json_reponseServeur = null;
+
+	// animation
+	private ProgressBar rechercheServeur;
+
+	private Button refresh;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,9 +66,11 @@ public class ListeCommandes extends Activity {
 		this.listeCommandes = (ListView) findViewById(R.id.listeCommandes);
 		this.listeCommandes.setOnItemClickListener(new OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
 
-				int id_commande = ((StringItem) listeCommandes.getItemAtPosition(position)).second;
+				int id_commande = ((StringItem) listeCommandes
+						.getItemAtPosition(position)).second;
 				Intent i = new Intent(ListeCommandes.this, VueCommande.class);
 				i.putExtra("id_commande", id_commande);
 				i.putExtra("id_serveur", serveur.getId());
@@ -69,30 +78,52 @@ public class ListeCommandes extends Activity {
 			}
 		});
 
+		// animation
+		this.rechercheServeur = (ProgressBar) findViewById(R.id.progressBar_rechercheServeur);
+		this.rechercheServeur.setVisibility(View.INVISIBLE);
+
+		this.refresh = (Button) findViewById(R.id.bouton_refresh);
+		this.refresh.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				refreshList();
+			}
+		});
+		
+
 		// initialisation du handler
 		this.handler = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
 
 				switch (valeurStatus[msg.what]) {
-				
+
+				case START:
+					rechercheServeur.setVisibility(View.VISIBLE);
+					break;
+
 				case OK:
+					rechercheServeur.setVisibility(View.INVISIBLE);
 					updateListeCommande();
 					break;
-					
+
 				case ConnexionException:
+					rechercheServeur.setVisibility(View.INVISIBLE);
 					makeToast("Ce serveur n'est pas à l'écoute sur aucun des ports");
 					break;
-					
+
 				case JSONException:
+					rechercheServeur.setVisibility(View.INVISIBLE);
 					makeToast("Le serveur renvoie quelque chose d'incompréhensible (ce n'est pas du json");
 					break;
-					
+
 				case ERROR_:
+					rechercheServeur.setVisibility(View.INVISIBLE);
 					makeToast("une erreur est survenue");
 					break;
-					
+
 				default:
+					rechercheServeur.setVisibility(View.INVISIBLE);
 					makeToast("NE DEVRAIS VRAIMENT PAS ETRE ICI");
 					break;
 				}
@@ -104,6 +135,17 @@ public class ListeCommandes extends Activity {
 	protected void onResume() {
 		super.onResume();
 
+		// on sort si on a déjà la liste
+		if (this.json_reponseServeur != null) return;
+
+		refreshList();
+
+	}
+
+	public void refreshList() {
+
+		this.json_reponseServeur = null;
+		
 		// connecté à internet ?
 		if (!NetworkUtil.isConnected(getApplicationContext())) {
 			System.out.println("ListeCommandes.class : android non connecté ! (onResume)");
@@ -116,7 +158,6 @@ public class ListeCommandes extends Activity {
 		connexion_serveur.start();
 
 		this.makeToast("Connexion au serveur");
-
 	}
 
 	public void setJSONResponseServeur(JSONObject json_reponse) {
@@ -135,7 +176,7 @@ public class ListeCommandes extends Activity {
 		Toast.makeText(ListeCommandes.this, message, Toast.LENGTH_SHORT).show();
 	}
 
-	public void updateListeCommande() {
+	private void updateListeCommande() {
 
 		this.supprimerAnciennesCommandes();
 
@@ -160,13 +201,16 @@ public class ListeCommandes extends Activity {
 				listeLignes.add(new StringItem(nom_commande, id_commande));
 
 				// ajout de la commande dans la BD
-				Commande nouvelle_commande = new Commande(nom_commande,description_commande, script_commande, id_commande);
+				Commande nouvelle_commande = new Commande(nom_commande,
+						description_commande, script_commande, id_commande);
 				commandeDAO.create(nouvelle_commande);
 			}
 			System.out.println("modification des données recu terminée");
 
 			// ajout des données dans la ListView
-			this.listeCommandes.setAdapter(new ArrayAdapter<StringItem>(getBaseContext(), android.R.layout.simple_list_item_1,listeLignes));
+			this.listeCommandes.setAdapter(new ArrayAdapter<StringItem>(
+					getBaseContext(), android.R.layout.simple_list_item_1,
+					listeLignes));
 			System.out.println("la liste des commandes à été affichée");
 
 		} catch (JSONException e) {

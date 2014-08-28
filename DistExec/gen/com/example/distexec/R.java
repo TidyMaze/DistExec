@@ -26,19 +26,21 @@ public final class R {
     }
     public static final class id {
         public static final int LinearLayout1=0x7f080000;
-        public static final int action_settings=0x7f08000f;
-        public static final int ajoutServ=0x7f08000e;
+        public static final int action_settings=0x7f080011;
+        public static final int ajoutServ=0x7f080010;
         public static final int ajoutServIp=0x7f080002;
         public static final int ajoutServNom=0x7f080004;
         public static final int annuler=0x7f080005;
+        public static final int bouton_refresh=0x7f08000d;
         public static final int description=0x7f08000b;
         public static final int description_commande_scroll=0x7f080009;
         public static final int executer=0x7f080008;
         public static final int listeCommandes=0x7f08000c;
-        public static final int listeServeurs=0x7f08000d;
+        public static final int listeServeurs=0x7f08000f;
         public static final int nom_commande=0x7f080007;
-        public static final int textView1=0x7f080001;
+        public static final int progressBar_rechercheServeur=0x7f08000e;
         public static final int textView2=0x7f080003;
+        public static final int text_info_connexion=0x7f080001;
         public static final int textview1=0x7f08000a;
         public static final int valider=0x7f080006;
     }
@@ -65,6 +67,8 @@ public final class R {
         public static final int commandeExecuter=0x7f05000d;
         public static final int commandeNom=0x7f05000b;
         public static final int hello_world=0x7f050001;
+        public static final int refresh=0x7f05000e;
+        public static final int text_info_co=0x7f05000f;
         public static final int title_activity_ajout_serveur=0x7f050005;
         public static final int title_activity_commande=0x7f05000a;
         public static final int title_activity_liste_commandes=0x7f050004;

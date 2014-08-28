@@ -13,8 +13,34 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true" >
+        android:layout_below="@+id/bouton_refresh" >
 
     </ListView>
+
+    <ProgressBar
+        android:id="@+id/progressBar_rechercheServeur"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" />
+
+    <Button
+        android:id="@+id/bouton_refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/listeCommandes"
+        android:layout_alignParentTop="true"
+        android:text="@string/refresh" />
+
+    <TextView
+        android:id="@+id/text_info_connexion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/listeCommandes"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/bouton_refresh"
+        android:layout_toRightOf="@+id/bouton_refresh"
+        android:text="@string/text_info_co" />
 
 </RelativeLayout>

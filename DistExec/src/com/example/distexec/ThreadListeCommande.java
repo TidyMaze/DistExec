@@ -14,6 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.Handler;
+import android.util.Log;
 
 import com.example.distexec.BD.Serveur;
 
@@ -31,7 +32,9 @@ public class ThreadListeCommande extends Thread {
 
 	@Override
 	public void run() {
-
+		
+		this.sendMessage( Status.START );
+		
 		try {
 
 			// connexion au serveur
@@ -40,6 +43,8 @@ public class ThreadListeCommande extends Thread {
 			System.out.println("port distant : " + socket.getPort());
 			System.out.println("port local   : " + socket.getLocalPort());
 
+			Log.e("MONMESSAGE!!!!!", "apres socket");
+			
 			// canaux d'écriture
 			OutputStream os = socket.getOutputStream();
 			OutputStreamWriter osw = new OutputStreamWriter(os);
@@ -49,7 +54,7 @@ public class ThreadListeCommande extends Thread {
 			InputStream is = socket.getInputStream();
 			InputStreamReader isr = new InputStreamReader(is);
 			BufferedReader br = new BufferedReader(isr);
-
+			
 			// demande la liste des commandes du serveur
 			/*
 			 * Au format JSON : { etat: "lister" }
@@ -64,7 +69,7 @@ public class ThreadListeCommande extends Thread {
 			pw.println(json_listerCommande.toString());
 			pw.flush();
 			System.out.println("demande des commandes envoyé");
-
+			
 			// récupère la liste des commandes du serveur
 			String ligne = null;
 			while (ligne == null) {
