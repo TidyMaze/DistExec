@@ -55,10 +55,12 @@ public class ThreadListeCommande extends Thread {
 			InputStreamReader isr = new InputStreamReader(is);
 			BufferedReader br = new BufferedReader(isr);
 			
+			
 			// demande la liste des commandes du serveur
 			/*
 			 * Au format JSON : { etat: "lister" }
 			 */
+			this.sendMessage( Status.DEMANDE_LISTE );
 			JSONObject json_listerCommande = new JSONObject();
 			try {
 				json_listerCommande.put("etat", "lister");
@@ -71,12 +73,14 @@ public class ThreadListeCommande extends Thread {
 			System.out.println("demande des commandes envoyé");
 			
 			// récupère la liste des commandes du serveur
+			this.sendMessage( Status.RECUPERE_LISTE );
 			String ligne = null;
 			while (ligne == null) {
 				ligne = br.readLine(); // bloquant !
 			}
 			
 			// la convertie en JSON
+			this.sendMessage( Status.CONVERTIE_LISTE );
 			JSONObject reponse_json = new JSONObject(ligne);
 			
 			// on indique au thread principale (l'activité) que le résultat est près

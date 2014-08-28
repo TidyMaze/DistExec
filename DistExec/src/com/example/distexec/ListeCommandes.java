@@ -13,6 +13,7 @@ import com.example.distexec.BD.Commande;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -27,6 +28,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+import android.widget.TextView;
 
 public class ListeCommandes extends Activity {
 
@@ -45,7 +47,9 @@ public class ListeCommandes extends Activity {
 	private ProgressBar rechercheServeur;
 
 	private Button refresh;
-
+	private TextView messageUser;
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -82,6 +86,7 @@ public class ListeCommandes extends Activity {
 		this.rechercheServeur = (ProgressBar) findViewById(R.id.progressBar_rechercheServeur);
 		this.rechercheServeur.setVisibility(View.INVISIBLE);
 
+		// information pour l'utilisateur (bouton et texte)
 		this.refresh = (Button) findViewById(R.id.bouton_refresh);
 		this.refresh.setOnClickListener(new OnClickListener() {
 			@Override
@@ -90,7 +95,8 @@ public class ListeCommandes extends Activity {
 			}
 		});
 		
-
+		this.messageUser = (TextView) findViewById( R.id.text_info_connexion );
+		
 		// initialisation du handler
 		this.handler = new Handler() {
 			@Override
@@ -100,31 +106,49 @@ public class ListeCommandes extends Activity {
 
 				case START:
 					rechercheServeur.setVisibility(View.VISIBLE);
+					setText("Connexion au serveur" , Color.GRAY );
 					break;
 
+				case DEMANDE_LISTE:
+					//rechercheServeur.setVisibility(View.VISIBLE);
+					setText("Connexion au serveur" , Color.parseColor("#FFFF3300") );
+					break;
+					
+				case RECUPERE_LISTE:
+					//rechercheServeur.setVisibility(View.VISIBLE);
+					setText("Connexion au serveur" , Color.parseColor("#FFFF3300") );
+					break;
+					
+				case CONVERTIE_LISTE:
+					//rechercheServeur.setVisibility(View.VISIBLE);
+					setText("Connexion au serveur" , Color.parseColor("#FFFF3300") );
+					break;
+					
 				case OK:
 					rechercheServeur.setVisibility(View.INVISIBLE);
 					updateListeCommande();
+					setText("OK" , Color.GREEN );
 					break;
 
 				case ConnexionException:
 					rechercheServeur.setVisibility(View.INVISIBLE);
+					setText("Impossible de se connecter" , Color.RED );
 					makeToast("Ce serveur n'est pas à l'écoute sur aucun des ports");
 					break;
 
 				case JSONException:
 					rechercheServeur.setVisibility(View.INVISIBLE);
-					makeToast("Le serveur renvoie quelque chose d'incompréhensible (ce n'est pas du json");
+					setText("Le serveur renvoie quelque chose d'incompréhensible" , Color.RED );
 					break;
 
 				case ERROR_:
 					rechercheServeur.setVisibility(View.INVISIBLE);
-					makeToast("une erreur est survenue");
+					setText("Une erreur est survenue" , Color.RED );
 					break;
 
 				default:
 					rechercheServeur.setVisibility(View.INVISIBLE);
-					makeToast("NE DEVRAIS VRAIMENT PAS ETRE ICI");
+					setText("Une erreur encore plus grave est survenue" , Color.RED );
 					break;
 				}
 			}
@@ -149,6 +173,7 @@ public class ListeCommandes extends Activity {
 		// connecté à internet ?
 		if (!NetworkUtil.isConnected(getApplicationContext())) {
 			System.out.println("ListeCommandes.class : android non connecté ! (onResume)");
+			this.setText("Vous devez connecter votre appareil à internet", Color.MAGENTA );
 			this.makeToast("Vous devez connecter votre appareil à internet");
 			return; // on sort ici !!
 		}
@@ -157,7 +182,7 @@ public class ListeCommandes extends Activity {
 		ThreadListeCommande connexion_serveur = new ThreadListeCommande(this);
 		connexion_serveur.start();
 
-		this.makeToast("Connexion au serveur");
+		//this.makeToast("Connexion au serveur");
 	}
 
 	public void setJSONResponseServeur(JSONObject json_reponse) {
@@ -172,6 +197,12 @@ public class ListeCommandes extends Activity {
 		return this.handler;
 	}
 
+	public void setText( String texte , int couleurTexte ) {
+		this.messageUser.setTextColor(couleurTexte);
+		this.messageUser.setText( texte );
+	}
+	
+	
 	public void makeToast(String message) {
 		Toast.makeText(ListeCommandes.this, message, Toast.LENGTH_SHORT).show();
 	}
