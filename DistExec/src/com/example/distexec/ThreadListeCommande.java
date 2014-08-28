@@ -13,6 +13,7 @@ import java.net.SocketException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.graphics.Color;
 import android.os.Handler;
 import android.util.Log;
 
@@ -34,6 +35,15 @@ public class ThreadListeCommande extends Thread {
 	public void run() {
 		
 		this.sendMessage( Status.START );
+		
+		
+		// connecté à internet ?
+		if (!NetworkUtil.isConnected( this.listeCommandes.getApplicationContext() )) {
+			System.out.println("ListeCommandes.class : android non connecté ! (onResume)");
+			this.sendMessage( Status.NO_INTERNET );
+			return; // on sort ici !!
+		}				
+		
 		
 		try {
 

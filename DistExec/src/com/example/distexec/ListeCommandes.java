@@ -129,7 +129,13 @@ public class ListeCommandes extends Activity {
 					updateListeCommande();
 					setText("OK" , Color.GREEN );
 					break;
-
+				
+				case NO_INTERNET:
+					rechercheServeur.setVisibility(View.INVISIBLE);
+					makeToast("Vous devez connecter votre appareil à internet");
+					setText("Vous devez connecter votre appareil à internet", Color.MAGENTA );
+					break;
+					
 				case ConnexionException:
 					rechercheServeur.setVisibility(View.INVISIBLE);
 					setText("Impossible de se connecter" , Color.RED );
@@ -170,14 +176,6 @@ public class ListeCommandes extends Activity {
 
 		this.json_reponseServeur = null;
 		
-		// connecté à internet ?
-		if (!NetworkUtil.isConnected(getApplicationContext())) {
-			System.out.println("ListeCommandes.class : android non connecté ! (onResume)");
-			this.setText("Vous devez connecter votre appareil à internet", Color.MAGENTA );
-			this.makeToast("Vous devez connecter votre appareil à internet");
-			return; // on sort ici !!
-		}
-
 		// connexion au serveur, en attente de la réponse
 		ThreadListeCommande connexion_serveur = new ThreadListeCommande(this);
 		connexion_serveur.start();
