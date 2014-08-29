@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -48,8 +49,8 @@ public class ListeCommandes extends Activity {
 
 	private Button refresh;
 	private TextView messageUser;
-	
-	
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -81,7 +82,7 @@ public class ListeCommandes extends Activity {
 				startActivity(i);
 			}
 		});
-
+		
 		// animation
 		this.rechercheServeur = (ProgressBar) findViewById(R.id.progressBar_rechercheServeur);
 		this.rechercheServeur.setVisibility(View.INVISIBLE);
@@ -94,9 +95,9 @@ public class ListeCommandes extends Activity {
 				refreshList();
 			}
 		});
-		
+
 		this.messageUser = (TextView) findViewById( R.id.text_info_connexion );
-		
+
 		// initialisation du handler
 		this.handler = new Handler() {
 			@Override
@@ -109,33 +110,33 @@ public class ListeCommandes extends Activity {
 					setText("Connexion au serveur" , Color.GRAY );
 					break;
 
-				case DEMANDE_LISTE:
+				case DEMANDE_:
 					//rechercheServeur.setVisibility(View.VISIBLE);
 					setText("Connexion au serveur" , Color.parseColor("#FFFF3300") );
 					break;
-					
-				case RECUPERE_LISTE:
+
+				case RECUPERE_:
 					//rechercheServeur.setVisibility(View.VISIBLE);
 					setText("Connexion au serveur" , Color.parseColor("#FFFF3300") );
 					break;
-					
-				case CONVERTIE_LISTE:
+
+				case CONVERTIE_:
 					//rechercheServeur.setVisibility(View.VISIBLE);
 					setText("Connexion au serveur" , Color.parseColor("#FFFF3300") );
 					break;
-					
+
 				case OK:
 					rechercheServeur.setVisibility(View.INVISIBLE);
 					updateListeCommande();
 					setText("OK" , Color.GREEN );
 					break;
-				
+
 				case NO_INTERNET:
 					rechercheServeur.setVisibility(View.INVISIBLE);
 					makeToast("Vous devez connecter votre appareil à internet");
 					setText("Vous devez connecter votre appareil à internet", Color.MAGENTA );
 					break;
-					
+
 				case ConnexionException:
 					rechercheServeur.setVisibility(View.INVISIBLE);
 					setText("Impossible de se connecter" , Color.RED );
@@ -175,7 +176,7 @@ public class ListeCommandes extends Activity {
 	public void refreshList() {
 
 		this.json_reponseServeur = null;
-		
+
 		// connexion au serveur, en attente de la réponse
 		ThreadListeCommande connexion_serveur = new ThreadListeCommande(this);
 		connexion_serveur.start();
@@ -199,8 +200,8 @@ public class ListeCommandes extends Activity {
 		this.messageUser.setTextColor(couleurTexte);
 		this.messageUser.setText( texte );
 	}
-	
-	
+
+
 	public void makeToast(String message) {
 		Toast.makeText(ListeCommandes.this, message, Toast.LENGTH_SHORT).show();
 	}

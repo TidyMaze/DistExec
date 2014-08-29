@@ -4,9 +4,11 @@ public enum Status {
 	
 	START,
 	NO_INTERNET,  
-	DEMANDE_LISTE, 
-	RECUPERE_LISTE,
-	CONVERTIE_LISTE,
+	
+	DEMANDE_, 
+	RECUPERE_,
+	CONVERTIE_,
+	
 	OK,
 	ConnexionException,
 	JSONException,

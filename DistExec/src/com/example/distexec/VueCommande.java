@@ -1,14 +1,6 @@
 package com.example.distexec;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.ConnectException;
-import java.net.Socket;
+
 import java.sql.SQLException;
 import java.util.List;
 
@@ -25,26 +17,27 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class VueCommande extends Activity {
 
-	private static final int PORTMIN = 9301;
-	private static final int PORTMAX = 9305;
 	private Serveur serveur;
 	private Commande commande;
 
 	private Handler handler;
 	private static Status[] valeurStatus = Status.values();
 
+	private JSONObject json_reponseServeur = null;
 
+	// animation
+	private ProgressBar progressBar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -95,11 +88,14 @@ public class VueCommande extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				execuerCommande();
+				executerCommande();
 			}
 		});
 
-
+		// animation
+		this.progressBar = (ProgressBar) findViewById( R.id.progressBar_executionCommande );
+		this.progressBar.setVisibility(View.INVISIBLE);
+		
 		// initialisation du handler
 		this.handler = new Handler() {
 			@Override
@@ -107,29 +103,92 @@ public class VueCommande extends Activity {
 
 				switch (valeurStatus[msg.what]) {
 
+				case START:
+					progressBar.setVisibility(View.VISIBLE);
+					break;
+
+				case DEMANDE_:
+					break;
+
+				case RECUPERE_:
+					break;
+
+				case CONVERTIE_:
+					break;
+
+				case OK:
+					// traitement de la réponse du serveur ici !
+					progressBar.setVisibility(View.INVISIBLE);
+					traiterReponse();
+					break;
+
 				case NO_INTERNET:
+					progressBar.setVisibility(View.INVISIBLE);
 					makeToast("Vous devez connecter votre appareil à internet");
 					break;
 
 				case ConnexionException:
+					progressBar.setVisibility(View.INVISIBLE);
 					makeToast("Ce serveur n'est pas à l'écoute sur aucun des ports");
+					break;
+				case JSONException:
+					progressBar.setVisibility(View.INVISIBLE);
+					makeToast("Le serveur renvoie quelque chose d'incompréhensible");
+					break;
+
+				case ERROR_:
+					progressBar.setVisibility(View.INVISIBLE);
+					makeToast("Une erreur est survenue");
 					break;
 
 				default:
-					makeToast("Une grande erreur est survenue");
+					progressBar.setVisibility(View.INVISIBLE);
+					makeToast("Mais que ce passe t'il ??");
 					break;
-				}
+				}				
+
 			}
 		};
 
 	}
 
-	public void execuerCommande() {
+	public void executerCommande() {
+		this.json_reponseServeur = null;
 		ThreadCommande connexion_serveur = new ThreadCommande( this);
 		connexion_serveur.start();
 	}
 
 
+	public void traiterReponse() {
+		
+		// deux cas normalement impossible
+		if( this.json_reponseServeur == null ) return;
+		if( !this.json_reponseServeur.has("etat") ) return;
+		
+		try {
+			
+			String etat = this.json_reponseServeur.getString("etat");
+			if( etat.equals("OK") ) {
+				this.makeToast("la commande a été exécutée");
+			}
+			else if( etat.equals("erreur") ) {
+				
+				String erreur = this.json_reponseServeur.getString("erreur");
+				this.makeToast("une erreur est survenue : " + erreur );
+			}
+			else {
+				this.makeToast("mais qu'est ce que c'est ?");
+			}
+			
+			
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
 
 
 
@@ -140,13 +199,17 @@ public class VueCommande extends Activity {
 	public Commande getCommande() {
 		return commande;
 	}
-	
+
 	public Handler getHandler() {
 		return this.handler;
 	}
-	
+
 	public void makeToast(String message) {
 		Toast.makeText(VueCommande.this, message, Toast.LENGTH_SHORT).show();
+	}
+
+	public void setJSONResponseServeur(JSONObject json_reponse) {
+		this.json_reponseServeur = json_reponse;
 	}
 
 

@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.net.ConnectException;
 import java.net.Socket;
 
 import org.json.JSONException;
@@ -18,7 +17,7 @@ import com.example.distexec.BD.Serveur;
 
 import android.os.Handler;
 import android.util.Log;
-import android.widget.Toast;
+
 
 public class ThreadCommande extends Thread {
 
@@ -40,6 +39,7 @@ public class ThreadCommande extends Thread {
 	@Override
 	public void run() {
 
+		this.sendMessage( Status.START );
 		
 		if( !NetworkUtil.isConnected( this.vueCommande.getApplicationContext()) ) {
 			System.out.println("VueCommande.class : android non connecté ! (clic sur bouton 'executer')");
@@ -66,24 +66,51 @@ public class ThreadCommande extends Thread {
 			InputStreamReader isr = new InputStreamReader(is);
 			BufferedReader br = new BufferedReader(isr);
 
-			// demande la liste des commandes du serveur
+			// demande l'exécution d'une commande sur le serveur
 			/* Au format JSON :
 			 * {
 			 * 		etat: "executer"
 			 * 		id: "id_commande"
 			 * }
 			 */
+			this.sendMessage( Status.DEMANDE_ );
 			JSONObject json_listerCommande = new JSONObject();
-			json_listerCommande.put( "etat" , "executer" );
-			json_listerCommande.put( "id" , commande.getIdServeur() );
+			try {
+				json_listerCommande.put( "etat" , "executer" );
+				json_listerCommande.put( "id" , commande.getIdServeur() );
+			} catch (JSONException e) {
+				// If the value is non-finite number or if the key is null.
+				e.printStackTrace();
+			}
 			pw.println( json_listerCommande.toString() );
 			pw.flush();	
+
+			
+			
+			
+			// récupère la liste des commandes du serveur
+			this.sendMessage( Status.RECUPERE_ );
+			String ligne = null;
+			while (ligne == null) {
+				ligne = br.readLine(); // bloquant !
+			}
+
+			// la convertie en JSON
+			this.sendMessage( Status.CONVERTIE_ );
+			JSONObject reponse_json = new JSONObject(ligne);
+
+			// on indique au thread principale (l'activité) que le résultat est près
+			this.vueCommande.setJSONResponseServeur(reponse_json);
+			this.sendMessage( Status.OK );
+			System.out.println("liste des commandes (json) : " + ligne);
 
 		}
 		catch( JSONException e ) {
 			e.printStackTrace();
+			this.sendMessage( Status.JSONException );
 		} catch (IOException e) {
 			e.printStackTrace();
+			this.sendMessage( Status.ERROR_ );
 		}
 		catch( ConnexionException e ) {
 			e.printStackTrace();

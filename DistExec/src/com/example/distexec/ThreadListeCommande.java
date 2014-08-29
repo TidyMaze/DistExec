@@ -13,7 +13,6 @@ import java.net.SocketException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.graphics.Color;
 import android.os.Handler;
 import android.util.Log;
 
@@ -70,7 +69,7 @@ public class ThreadListeCommande extends Thread {
 			/*
 			 * Au format JSON : { etat: "lister" }
 			 */
-			this.sendMessage( Status.DEMANDE_LISTE );
+			this.sendMessage( Status.DEMANDE_ );
 			JSONObject json_listerCommande = new JSONObject();
 			try {
 				json_listerCommande.put("etat", "lister");
@@ -83,14 +82,14 @@ public class ThreadListeCommande extends Thread {
 			System.out.println("demande des commandes envoyé");
 			
 			// récupère la liste des commandes du serveur
-			this.sendMessage( Status.RECUPERE_LISTE );
+			this.sendMessage( Status.RECUPERE_ );
 			String ligne = null;
 			while (ligne == null) {
 				ligne = br.readLine(); // bloquant !
 			}
 			
 			// la convertie en JSON
-			this.sendMessage( Status.CONVERTIE_LISTE );
+			this.sendMessage( Status.CONVERTIE_ );
 			JSONObject reponse_json = new JSONObject(ligne);
 			
 			// on indique au thread principale (l'activité) que le résultat est près
